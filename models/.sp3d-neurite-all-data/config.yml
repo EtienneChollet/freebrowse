@@ -1,0 +1,187 @@
+data:
+  _class: interseg3d.datasets.thunderpack_with_context.multisegment3d.MultiBinarySegment3D
+  version: v5.3
+  samples_per_epoch: 1000
+  sampling: hierarchical
+  min_label_density: 100
+  label_type: hard
+  train_datasets:
+  - ABIDE
+  - ACDC
+  - ADHD200
+  - ADNI
+  - ATM
+  - AbdomenAtlas
+  - AbdomenCT_1k
+  - BHSD
+  - BONBID_HIE
+  - BTCV
+  - BraTS
+  - BrainMetShare
+  - CHAOS
+  - CT_ICH
+  - CT_ORG
+  - DukeLiver
+  - FeTA
+  - GSP
+  - HaN_Seg
+  - I2CVB
+  - ISBI_Prostate
+  - ISLES
+  - KiTS
+  - MCIC
+  - MSD
+  - MSSEG
+  - OASIS
+  - PPMI
+  - PROMISE12
+  - SLIVER
+  - SPIDER
+  - SegTHOR
+  - Seg_CQ
+  - ShiftsChallenge
+  - Spine_Mets_CT_Seg
+  - TDSC
+  - ToothFairy
+  - TotalSegmentator/MR_v1
+  - TotalSegmentator/v2
+  - UCSF_BMSR
+  - WMH
+  - WORD
+  - autoPET
+  - cDEMRIS
+  - AtriaSeg
+  - Leg3DUS
+  - Valdo
+  - ARC
+  - BreastDCEDL
+  - LGGFlair
+  - DresdenEar
+  - BOBs
+  - SOOP
+  - SegA
+  - MouseTumourMultiSeg
+  - INSTANCE
+  - Emidec
+  - SKM_TEA
+  - BrainDevelopment
+  - MNMS
+  - BUNGEE_TOOLS
+  - Drosophilia
+  - FOMO25
+  - UltraCortex
+  - LNQ
+  - SegThy
+  - PediMS
+  - Open_MS_Data
+  - MAMA_MIA
+  - MSLesSeg
+  - MacaqueAngio
+  - ToPCoW
+  - TopBrain
+  - MediaStruct
+  - CereVessMRA
+  val_datasets:
+  - AMOS
+  - COBRE
+  - LiTS
+  generator:
+    _class: interseg3d.datasets.collate.CollateTaskWithContext
+    include_task_name: true
+    target_transform:
+      _class: monai.transforms.Compose
+      lazy: true
+      transforms:
+      - _class: monai.transforms.CropForegroundd
+        keys:
+        - vol
+        - seg
+        source_key: vol
+      - _class: interseg3d.augmentation.spatial.ResizeToMaxDimd
+        keys:
+        - vol
+        - seg
+        min_dim_size: 512
+        modes:
+        - linear
+        - nearest
+      - _class: monai.transforms.DivisiblePadd
+        keys:
+        - vol
+        - seg
+        k: 16
+dataloader:
+  context_size: 0
+  batch_sampler:
+    _class: interseg3d.datasets.batch_samplers.UniformBatchSampler
+    batch_size: 1
+    samples_per_epoch: 1000
+    drop_last: false
+  num_workers: 12
+  pin_memory: true
+  persistent_workers: true
+  prefetch_factor: 2
+callbacks:
+  epoch:
+  - pylot.callbacks.PrintLogged
+  - pylot.callbacks.JobProgress
+  - pylot.callbacks.ETA
+  - pylot.callbacks.TerminateOnNaN
+  - pylot.callbacks.ModelCheckpoint:
+      monitor: dice_score
+      phase: val_id
+  - pylot.callbacks.ModelCheckpoint:
+      monitor: dice_score
+      phase: val_od
+  - interseg3d.callbacks.WandbLogger:
+      project: 2026-01-14_sp3d_all-data
+      entity: interseg3d
+      group: spe3d_all-data
+loss_func:
+  _class: pylot.loss.SoftDiceLoss
+  batch_reduction: null
+  from_logits: true
+  mode: binary
+experiment:
+  seed: 42
+log:
+  checkpoint_freq: 10
+  metrics:
+    dice_score:
+      _fn: pylot.metrics.dice_score
+      batch_reduction: null
+      from_logits: true
+      mode: binary
+  root: /cluster/dalcalab2/users/epc28/projects/interseg3d/output/2026-01-10_sp3d_all-data/
+  save_freq: 100
+model:
+  _class: interseg3d.models.neurite.BasicUNet
+  ndim: 3
+  in_channels: 5
+  out_channels: 1
+  nb_features:
+  - 4
+  - 16
+  - 256
+  - 256
+  compile: false
+  final_activation: null
+  order: ca
+optim:
+  _class: torch.optim.Adam
+  lr: 0.0001
+prompts:
+  _class: interseg3d.prompts3d.prompt_generator_v3.RandomClickGenerator
+  do_initial_click_prob: 1.0
+  do_click_prob: 1.0
+  min_clicks_per_prompt_iter: 1
+  max_clicks_per_prompt_iter: 10
+  include_previous_prediction: false
+  include_previous_logits: false
+train:
+  epochs: 10000
+  eval_freq: 10
+  prompt_iter: 2
+  bf16: true
+  grad_accumulation: true
+  repeat_batch_elements: false

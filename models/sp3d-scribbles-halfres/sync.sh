@@ -1,0 +1,1 @@
+cp /autofs/cluster/dalcalab2/users/epc28/projects/interseg3d/output/orcd_transfer/2026-03-27_ce-prompts/20260330_024136-3347436cb56987353f68352f4430b3cb-ICY-MANGO/checkpoints/max-val_od-dice_score.pt weights.pt

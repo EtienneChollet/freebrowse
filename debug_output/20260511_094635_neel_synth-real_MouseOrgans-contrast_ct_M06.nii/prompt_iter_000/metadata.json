@@ -1,0 +1,19 @@
+{
+  "model_name": "neel_synth-real",
+  "volume_name": "MouseOrgans-contrast_ct_M06.nii",
+  "timestamp": "20260511_094636_224998",
+  "input_shape": [
+    1,
+    5,
+    160,
+    128,
+    256
+  ],
+  "channel_names": [
+    "volume",
+    "previous_pred",
+    "positive",
+    "negative",
+    "unused"
+  ]
+}

@@ -1,0 +1,354 @@
+{
+  "predict_debug_discovery": {
+    "default_debug_root": "debug_output",
+    "default_finds_nested_exports": 0,
+    "note": "predict_debug.py uses a non-recursive DEBUG_ROOT, so nested exports need DEBUG_ROOT pointed at debug_output/h5_synth_neel or equivalent.",
+    "synthetic_debug_root": "debug_output/h5_synth_neel",
+    "synthetic_root_session_count": 5,
+    "synthetic_root_sessions": [
+      "amix_000002_view0.nii",
+      "brains_000004_view0.nii",
+      "WBCT_000000_view0.nii",
+      "AnyStar_000011_view0.nii",
+      "Vessels_000020_view0.nii"
+    ]
+  },
+  "pytest": {
+    "command": "python -m pytest",
+    "cwd": "/autofs/cluster/dalcalab2/users/epc28/projects/freebrowse_bhim",
+    "result": "collected 0 items; no project tests ran; pytest exit code 5"
+  },
+  "records": [
+    {
+      "engine": "amix",
+      "iteration_dir": "/autofs/cluster/dalcalab2/users/epc28/projects/freebrowse_bhim/debug_output/h5_synth_neel/amix_000002_view0.nii/prompt_iter_000",
+      "label_id": 1,
+      "loaded_files": {
+        "0_volume.nii.gz": {
+          "finite": true,
+          "shape": [
+            128,
+            128,
+            128
+          ],
+          "sum": 366391.625
+        },
+        "1_previous_pred.nii.gz": {
+          "finite": true,
+          "shape": [
+            128,
+            128,
+            128
+          ],
+          "sum": 0.0
+        },
+        "2_positive.nii.gz": {
+          "finite": true,
+          "shape": [
+            128,
+            128,
+            128
+          ],
+          "sum": 27.0
+        },
+        "3_negative.nii.gz": {
+          "finite": true,
+          "shape": [
+            128,
+            128,
+            128
+          ],
+          "sum": 0.0
+        },
+        "4_unused.nii.gz": {
+          "finite": true,
+          "shape": [
+            128,
+            128,
+            128
+          ],
+          "sum": 0.0
+        },
+        "5_ground_truth.nii.gz": {
+          "finite": true,
+          "shape": [
+            128,
+            128,
+            128
+          ],
+          "sum": 886.0
+        }
+      },
+      "required_files_present": true,
+      "sample_key": "000002",
+      "view": 0
+    },
+    {
+      "engine": "brains",
+      "iteration_dir": "/autofs/cluster/dalcalab2/users/epc28/projects/freebrowse_bhim/debug_output/h5_synth_neel/brains_000004_view0.nii/prompt_iter_000",
+      "label_id": 1,
+      "loaded_files": {
+        "0_volume.nii.gz": {
+          "finite": true,
+          "shape": [
+            128,
+            128,
+            128
+          ],
+          "sum": 718852.875
+        },
+        "1_previous_pred.nii.gz": {
+          "finite": true,
+          "shape": [
+            128,
+            128,
+            128
+          ],
+          "sum": 0.0
+        },
+        "2_positive.nii.gz": {
+          "finite": true,
+          "shape": [
+            128,
+            128,
+            128
+          ],
+          "sum": 27.0
+        },
+        "3_negative.nii.gz": {
+          "finite": true,
+          "shape": [
+            128,
+            128,
+            128
+          ],
+          "sum": 0.0
+        },
+        "4_unused.nii.gz": {
+          "finite": true,
+          "shape": [
+            128,
+            128,
+            128
+          ],
+          "sum": 0.0
+        },
+        "5_ground_truth.nii.gz": {
+          "finite": true,
+          "shape": [
+            128,
+            128,
+            128
+          ],
+          "sum": 67522.0
+        }
+      },
+      "required_files_present": true,
+      "sample_key": "000004",
+      "view": 0
+    },
+    {
+      "engine": "WBCT",
+      "iteration_dir": "/autofs/cluster/dalcalab2/users/epc28/projects/freebrowse_bhim/debug_output/h5_synth_neel/WBCT_000000_view0.nii/prompt_iter_000",
+      "label_id": 1,
+      "loaded_files": {
+        "0_volume.nii.gz": {
+          "finite": true,
+          "shape": [
+            128,
+            128,
+            128
+          ],
+          "sum": 622738.4375
+        },
+        "1_previous_pred.nii.gz": {
+          "finite": true,
+          "shape": [
+            128,
+            128,
+            128
+          ],
+          "sum": 0.0
+        },
+        "2_positive.nii.gz": {
+          "finite": true,
+          "shape": [
+            128,
+            128,
+            128
+          ],
+          "sum": 15.0
+        },
+        "3_negative.nii.gz": {
+          "finite": true,
+          "shape": [
+            128,
+            128,
+            128
+          ],
+          "sum": 0.0
+        },
+        "4_unused.nii.gz": {
+          "finite": true,
+          "shape": [
+            128,
+            128,
+            128
+          ],
+          "sum": 0.0
+        },
+        "5_ground_truth.nii.gz": {
+          "finite": true,
+          "shape": [
+            128,
+            128,
+            128
+          ],
+          "sum": 25167.0
+        }
+      },
+      "required_files_present": true,
+      "sample_key": "000000",
+      "view": 0
+    },
+    {
+      "engine": "AnyStar",
+      "iteration_dir": "/autofs/cluster/dalcalab2/users/epc28/projects/freebrowse_bhim/debug_output/h5_synth_neel/AnyStar_000011_view0.nii/prompt_iter_000",
+      "label_id": 1,
+      "loaded_files": {
+        "0_volume.nii.gz": {
+          "finite": true,
+          "shape": [
+            128,
+            128,
+            128
+          ],
+          "sum": 435059.71875
+        },
+        "1_previous_pred.nii.gz": {
+          "finite": true,
+          "shape": [
+            128,
+            128,
+            128
+          ],
+          "sum": 0.0
+        },
+        "2_positive.nii.gz": {
+          "finite": true,
+          "shape": [
+            128,
+            128,
+            128
+          ],
+          "sum": 14.0
+        },
+        "3_negative.nii.gz": {
+          "finite": true,
+          "shape": [
+            128,
+            128,
+            128
+          ],
+          "sum": 0.0
+        },
+        "4_unused.nii.gz": {
+          "finite": true,
+          "shape": [
+            128,
+            128,
+            128
+          ],
+          "sum": 0.0
+        },
+        "5_ground_truth.nii.gz": {
+          "finite": true,
+          "shape": [
+            128,
+            128,
+            128
+          ],
+          "sum": 124008.0
+        }
+      },
+      "required_files_present": true,
+      "sample_key": "000011",
+      "view": 0
+    },
+    {
+      "engine": "Vessels",
+      "iteration_dir": "/autofs/cluster/dalcalab2/users/epc28/projects/freebrowse_bhim/debug_output/h5_synth_neel/Vessels_000020_view0.nii/prompt_iter_000",
+      "label_id": 1,
+      "loaded_files": {
+        "0_volume.nii.gz": {
+          "finite": true,
+          "shape": [
+            128,
+            128,
+            128
+          ],
+          "sum": 366925.1875
+        },
+        "1_previous_pred.nii.gz": {
+          "finite": true,
+          "shape": [
+            128,
+            128,
+            128
+          ],
+          "sum": 0.0
+        },
+        "2_positive.nii.gz": {
+          "finite": true,
+          "shape": [
+            128,
+            128,
+            128
+          ],
+          "sum": 14.0
+        },
+        "3_negative.nii.gz": {
+          "finite": true,
+          "shape": [
+            128,
+            128,
+            128
+          ],
+          "sum": 0.0
+        },
+        "4_unused.nii.gz": {
+          "finite": true,
+          "shape": [
+            128,
+            128,
+            128
+          ],
+          "sum": 0.0
+        },
+        "5_ground_truth.nii.gz": {
+          "finite": true,
+          "shape": [
+            128,
+            128,
+            128
+          ],
+          "sum": 90786.0
+        }
+      },
+      "required_files_present": true,
+      "sample_key": "000020",
+      "view": 0
+    }
+  ],
+  "records_validated": 5,
+  "required_files": [
+    "0_volume.nii.gz",
+    "1_previous_pred.nii.gz",
+    "2_positive.nii.gz",
+    "3_negative.nii.gz",
+    "4_unused.nii.gz",
+    "5_ground_truth.nii.gz",
+    "metadata.json"
+  ],
+  "status": "pass"
+}

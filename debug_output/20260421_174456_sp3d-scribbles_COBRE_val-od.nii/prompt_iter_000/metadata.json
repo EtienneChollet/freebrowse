@@ -1,0 +1,19 @@
+{
+  "model_name": "sp3d-scribbles",
+  "volume_name": "COBRE_val-od.nii",
+  "timestamp": "20260421_174500_185281",
+  "input_shape": [
+    1,
+    5,
+    160,
+    224,
+    192
+  ],
+  "channel_names": [
+    "volume",
+    "previous_pred",
+    "positive",
+    "negative",
+    "unused"
+  ]
+}

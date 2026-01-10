@@ -1,0 +1,95 @@
+{
+  "engines": [
+    "amix",
+    "brains",
+    "WBCT",
+    "AnyStar",
+    "Vessels"
+  ],
+  "output_dir": "/autofs/cluster/dalcalab2/users/epc28/projects/freebrowse_bhim/debug_output/h5_synth_neel",
+  "records": [
+    {
+      "engine": "amix",
+      "iteration_dir": "/autofs/cluster/dalcalab2/users/epc28/projects/freebrowse_bhim/debug_output/h5_synth_neel/amix_000002_view0.nii/prompt_iter_000",
+      "label_id": 1,
+      "metadata_path": "/autofs/cluster/dalcalab2/users/epc28/projects/freebrowse_bhim/debug_output/h5_synth_neel/amix_000002_view0.nii/prompt_iter_000/metadata.json",
+      "positive_voxels": 27,
+      "sample_key": "000002",
+      "session_dir": "/autofs/cluster/dalcalab2/users/epc28/projects/freebrowse_bhim/debug_output/h5_synth_neel/amix_000002_view0.nii",
+      "shape": [
+        128,
+        128,
+        128
+      ],
+      "target_voxels": 886,
+      "view": 0
+    },
+    {
+      "engine": "brains",
+      "iteration_dir": "/autofs/cluster/dalcalab2/users/epc28/projects/freebrowse_bhim/debug_output/h5_synth_neel/brains_000004_view0.nii/prompt_iter_000",
+      "label_id": 1,
+      "metadata_path": "/autofs/cluster/dalcalab2/users/epc28/projects/freebrowse_bhim/debug_output/h5_synth_neel/brains_000004_view0.nii/prompt_iter_000/metadata.json",
+      "positive_voxels": 27,
+      "sample_key": "000004",
+      "session_dir": "/autofs/cluster/dalcalab2/users/epc28/projects/freebrowse_bhim/debug_output/h5_synth_neel/brains_000004_view0.nii",
+      "shape": [
+        128,
+        128,
+        128
+      ],
+      "target_voxels": 67522,
+      "view": 0
+    },
+    {
+      "engine": "WBCT",
+      "iteration_dir": "/autofs/cluster/dalcalab2/users/epc28/projects/freebrowse_bhim/debug_output/h5_synth_neel/WBCT_000000_view0.nii/prompt_iter_000",
+      "label_id": 1,
+      "metadata_path": "/autofs/cluster/dalcalab2/users/epc28/projects/freebrowse_bhim/debug_output/h5_synth_neel/WBCT_000000_view0.nii/prompt_iter_000/metadata.json",
+      "positive_voxels": 15,
+      "sample_key": "000000",
+      "session_dir": "/autofs/cluster/dalcalab2/users/epc28/projects/freebrowse_bhim/debug_output/h5_synth_neel/WBCT_000000_view0.nii",
+      "shape": [
+        128,
+        128,
+        128
+      ],
+      "target_voxels": 25167,
+      "view": 0
+    },
+    {
+      "engine": "AnyStar",
+      "iteration_dir": "/autofs/cluster/dalcalab2/users/epc28/projects/freebrowse_bhim/debug_output/h5_synth_neel/AnyStar_000011_view0.nii/prompt_iter_000",
+      "label_id": 1,
+      "metadata_path": "/autofs/cluster/dalcalab2/users/epc28/projects/freebrowse_bhim/debug_output/h5_synth_neel/AnyStar_000011_view0.nii/prompt_iter_000/metadata.json",
+      "positive_voxels": 14,
+      "sample_key": "000011",
+      "session_dir": "/autofs/cluster/dalcalab2/users/epc28/projects/freebrowse_bhim/debug_output/h5_synth_neel/AnyStar_000011_view0.nii",
+      "shape": [
+        128,
+        128,
+        128
+      ],
+      "target_voxels": 124008,
+      "view": 0
+    },
+    {
+      "engine": "Vessels",
+      "iteration_dir": "/autofs/cluster/dalcalab2/users/epc28/projects/freebrowse_bhim/debug_output/h5_synth_neel/Vessels_000020_view0.nii/prompt_iter_000",
+      "label_id": 1,
+      "metadata_path": "/autofs/cluster/dalcalab2/users/epc28/projects/freebrowse_bhim/debug_output/h5_synth_neel/Vessels_000020_view0.nii/prompt_iter_000/metadata.json",
+      "positive_voxels": 14,
+      "sample_key": "000020",
+      "session_dir": "/autofs/cluster/dalcalab2/users/epc28/projects/freebrowse_bhim/debug_output/h5_synth_neel/Vessels_000020_view0.nii",
+      "shape": [
+        128,
+        128,
+        128
+      ],
+      "target_voxels": 90786,
+      "view": 0
+    }
+  ],
+  "source_config_path": "/autofs/cluster/dalcalab2/users/epc28/projects/interseg3d/interseg3d-notebooks/jupyter/scribbleprompt3d/2026-04-15_synth/configs/2026-04-17_h5-synth-only/config.yml",
+  "source_h5_path": "/autofs/cluster/dalcalab2/users/nd480/mid-projects/dataaug-real-pairing/multi_data_engine_h5/train_data.hdf5",
+  "source_index_path": "/autofs/cluster/dalcalab2/users/epc28/projects/interseg3d/interseg3d/datasets/h5_with_context/index.py"
+}

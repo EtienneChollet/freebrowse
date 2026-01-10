@@ -1,0 +1,19 @@
+{
+  "model_name": "neel_synth-only",
+  "volume_name": "CereVessMRA_CereVess_HH278.nii",
+  "timestamp": "20260427_171544_275961",
+  "input_shape": [
+    1,
+    5,
+    192,
+    224,
+    64
+  ],
+  "channel_names": [
+    "volume",
+    "previous_pred",
+    "positive",
+    "negative",
+    "unused"
+  ]
+}

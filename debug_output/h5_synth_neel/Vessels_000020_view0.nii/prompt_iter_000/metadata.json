@@ -1,0 +1,43 @@
+{
+  "channel_names": [
+    "volume",
+    "previous_pred",
+    "positive",
+    "negative",
+    "unused"
+  ],
+  "engine": "Vessels",
+  "files": {
+    "ground_truth": "prompt_iter_000/5_ground_truth.nii.gz",
+    "negative": "prompt_iter_000/3_negative.nii.gz",
+    "positive": "prompt_iter_000/2_positive.nii.gz",
+    "previous_pred": "prompt_iter_000/1_previous_pred.nii.gz",
+    "unused": "prompt_iter_000/4_unused.nii.gz",
+    "volume": "prompt_iter_000/0_volume.nii.gz"
+  },
+  "input_shape": [
+    1,
+    5,
+    128,
+    128,
+    128
+  ],
+  "label_id": 1,
+  "model_name": "h5_synth_neel",
+  "negative_voxels": 0,
+  "positive_voxels": 14,
+  "sample_key": "000020",
+  "shape": [
+    128,
+    128,
+    128
+  ],
+  "source_config_path": "/autofs/cluster/dalcalab2/users/epc28/projects/interseg3d/interseg3d-notebooks/jupyter/scribbleprompt3d/2026-04-15_synth/configs/2026-04-17_h5-synth-only/config.yml",
+  "source_h5_path": "/autofs/cluster/dalcalab2/users/nd480/mid-projects/dataaug-real-pairing/multi_data_engine_h5/train_data.hdf5",
+  "source_index_path": "/autofs/cluster/dalcalab2/users/epc28/projects/interseg3d/interseg3d/datasets/h5_with_context/index.py",
+  "target_name": "ground_truth",
+  "target_voxels": 90786,
+  "timestamp": "deterministic_h5_synth_neel",
+  "view": 0,
+  "volume_name": "Vessels_000020_view0.nii"
+}

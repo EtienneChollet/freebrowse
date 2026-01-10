@@ -1,0 +1,1058 @@
+[2026-04-27T21:12:58-04:00] Starting predict_debug.py with epoch-1300 weights
+<frozen importlib._bootstrap_external>:1064: FutureWarning: The cuda.cudart module is deprecated and will be removed in a future release, please switch to use the cuda.bindings.runtime module instead.
+Found 32 sessions in debug_output
+
+############################################################
+# Model: neel_synth-only
+############################################################
+Model loaded: neel_synth-only on cuda
+  Gaussian clicks: sigma=2, truncate=3, normalize=None
+
+============================================================
+Session: 20260408_170147_sp3d-scribbles-halfres_AMOS_0223.nii
+============================================================
+
+  prompt_iter_000:
+    Volume: (256, 256, 128), spacing: [1.3007812 1.3007812 4.       ]
+    +74 / -234 voxels
+    Positive:
+      CC separation: 2 clicks, 4 scribble components
+    Negative:
+      CC separation: 2 clicks, 18 scribble components
+    Prediction: 18824 voxels
+    Selected 3 slices
+  Saved: debug_output/20260408_170147_sp3d-scribbles-halfres_AMOS_0223.nii/prompt_iter_000/prediction_overlay_neel_synth-only.png
+    Isotropic: (256, 256, 394)
+  Saved: debug_output/20260408_170147_sp3d-scribbles-halfres_AMOS_0223.nii/prompt_iter_000/prediction_overlay_neel_synth-only_isotropic.png
+
+============================================================
+Session: 20260408_171412_sp3d-scribbles-halfres_AMOS_0223.nii
+============================================================
+
+  prompt_iter_000:
+    Volume: (256, 256, 128), spacing: [1.3007812 1.3007812 4.       ]
+    +1 / -1 voxels
+  WARNING: no in-plane scribbles, using fallback
+    Positive:
+      CC separation: 1 clicks, 0 scribble components
+    Negative:
+      CC separation: 1 clicks, 0 scribble components
+    Prediction: 3804 voxels
+    Selected 6 slices
+  Saved: debug_output/20260408_171412_sp3d-scribbles-halfres_AMOS_0223.nii/prompt_iter_000/prediction_overlay_neel_synth-only.png
+    Isotropic: (256, 256, 394)
+  Saved: debug_output/20260408_171412_sp3d-scribbles-halfres_AMOS_0223.nii/prompt_iter_000/prediction_overlay_neel_synth-only_isotropic.png
+
+============================================================
+Session: 20260408_171721_sp3d-scribbles-halfres_AMOS_0223.nii
+============================================================
+
+  prompt_iter_000:
+    Volume: (256, 256, 128), spacing: [1.3007812 1.3007812 4.       ]
+    +99 / -143 voxels
+    Positive:
+      CC separation: 3 clicks, 11 scribble components
+    Negative:
+      CC separation: 0 clicks, 13 scribble components
+    Prediction: 146158 voxels
+    Selected 5 slices
+  Saved: debug_output/20260408_171721_sp3d-scribbles-halfres_AMOS_0223.nii/prompt_iter_000/prediction_overlay_neel_synth-only.png
+    Isotropic: (256, 256, 394)
+  Saved: debug_output/20260408_171721_sp3d-scribbles-halfres_AMOS_0223.nii/prompt_iter_000/prediction_overlay_neel_synth-only_isotropic.png
+
+============================================================
+Session: 20260408_173114_sp3d-scribbles-halfres_LiTS_4.nii
+============================================================
+
+  prompt_iter_000:
+    Volume: (256, 256, 448), spacing: [1.804688 1.804688 1.6     ]
+    +338 / -196 voxels
+    Positive:
+      CC separation: 11 clicks, 49 scribble components
+    Negative:
+      CC separation: 0 clicks, 29 scribble components
+    Prediction: 45690 voxels
+    Selected 1 slices
+  Saved: debug_output/20260408_173114_sp3d-scribbles-halfres_LiTS_4.nii/prompt_iter_000/prediction_overlay_neel_synth-only.png
+    Isotropic: (289, 289, 448)
+  Saved: debug_output/20260408_173114_sp3d-scribbles-halfres_LiTS_4.nii/prompt_iter_000/prediction_overlay_neel_synth-only_isotropic.png
+
+============================================================
+Session: 20260408_174024_sp3d-scribbles-halfres_LiTS_4.nii
+============================================================
+
+  prompt_iter_000:
+    Volume: (256, 256, 448), spacing: [1.804688 1.804688 1.6     ]
+    +57 / -126 voxels
+    Positive:
+      CC separation: 0 clicks, 6 scribble components
+    Negative:
+      CC separation: 1 clicks, 10 scribble components
+    Prediction: 24270 voxels
+    Selected 6 slices
+  Saved: debug_output/20260408_174024_sp3d-scribbles-halfres_LiTS_4.nii/prompt_iter_000/prediction_overlay_neel_synth-only.png
+    Isotropic: (289, 289, 448)
+  Saved: debug_output/20260408_174024_sp3d-scribbles-halfres_LiTS_4.nii/prompt_iter_000/prediction_overlay_neel_synth-only_isotropic.png
+
+============================================================
+Session: 20260408_175012_sp3d-scribbles-halfres_LiTS_4.nii
+============================================================
+
+  prompt_iter_000:
+    Volume: (256, 256, 448), spacing: [1.804688 1.804688 1.6     ]
+    +3 / -19 voxels
+    Positive:
+      CC separation: 3 clicks, 0 scribble components
+    Negative:
+      CC separation: 4 clicks, 3 scribble components
+    Prediction: 44973 voxels
+    Selected 2 slices
+  Saved: debug_output/20260408_175012_sp3d-scribbles-halfres_LiTS_4.nii/prompt_iter_000/prediction_overlay_neel_synth-only.png
+    Isotropic: (289, 289, 448)
+  Saved: debug_output/20260408_175012_sp3d-scribbles-halfres_LiTS_4.nii/prompt_iter_000/prediction_overlay_neel_synth-only_isotropic.png
+
+============================================================
+Session: 20260413_143829_sp3d-scribbles-halfres_MouseOrgans-contrast_ct_M06.nii
+============================================================
+
+  prompt_iter_000:
+    Volume: (160, 128, 256), spacing: [0.28 0.28 0.28]
+    +7 / -109 voxels
+    Positive:
+      CC separation: 7 clicks, 0 scribble components
+    Negative:
+      CC separation: 4 clicks, 13 scribble components
+    Prediction: 18100 voxels
+    Selected 4 slices
+  Saved: debug_output/20260413_143829_sp3d-scribbles-halfres_MouseOrgans-contrast_ct_M06.nii/prompt_iter_000/prediction_overlay_neel_synth-only.png
+
+============================================================
+Session: 20260413_144307_sp3d-scribbles-halfres_MouseOrgans-contrast_ct_M06.nii
+============================================================
+
+  prompt_iter_000:
+    Volume: (160, 128, 256), spacing: [0.28 0.28 0.28]
+    +17 / -73 voxels
+    Positive:
+      CC separation: 2 clicks, 2 scribble components
+    Negative:
+      CC separation: 3 clicks, 7 scribble components
+    Prediction: 7908 voxels
+    Selected 4 slices
+  Saved: debug_output/20260413_144307_sp3d-scribbles-halfres_MouseOrgans-contrast_ct_M06.nii/prompt_iter_000/prediction_overlay_neel_synth-only.png
+
+============================================================
+Session: 20260413_144559_sp3d-scribbles-halfres_MouseOrgans-contrast_ct_M06.nii
+============================================================
+
+  prompt_iter_000:
+    Volume: (160, 128, 256), spacing: [0.28 0.28 0.28]
+    +53 / -126 voxels
+    Positive:
+      CC separation: 4 clicks, 6 scribble components
+    Negative:
+      CC separation: 5 clicks, 11 scribble components
+    Prediction: 6162 voxels
+    Selected 6 slices
+  Saved: debug_output/20260413_144559_sp3d-scribbles-halfres_MouseOrgans-contrast_ct_M06.nii/prompt_iter_000/prediction_overlay_neel_synth-only.png
+
+============================================================
+Session: 20260413_155009_sp3d-scribbles-halfres_NasalSeg-retrieved_2026_03_11_P052.nii
+============================================================
+
+  prompt_iter_000:
+    Volume: (96, 96, 32), spacing: [1.171875 1.171875 3.      ]
+    +8 / -44 voxels
+    Positive:
+      CC separation: 8 clicks, 0 scribble components
+    Negative:
+      CC separation: 3 clicks, 2 scribble components
+    Prediction: 8858 voxels
+    Selected 2 slices
+  Saved: debug_output/20260413_155009_sp3d-scribbles-halfres_NasalSeg-retrieved_2026_03_11_P052.nii/prompt_iter_000/prediction_overlay_neel_synth-only.png
+    Isotropic: (96, 96, 82)
+  Saved: debug_output/20260413_155009_sp3d-scribbles-halfres_NasalSeg-retrieved_2026_03_11_P052.nii/prompt_iter_000/prediction_overlay_neel_synth-only_isotropic.png
+
+============================================================
+Session: 20260413_160444_sp3d-scribbles-halfres_NasalSeg-retrieved_2026_03_11_P052.nii
+============================================================
+
+  prompt_iter_000:
+    Volume: (96, 96, 32), spacing: [1.171875 1.171875 3.      ]
+    +8 / -21 voxels
+    Positive:
+      CC separation: 8 clicks, 0 scribble components
+    Negative:
+      CC separation: 3 clicks, 2 scribble components
+    Prediction: 5456 voxels
+    Selected 5 slices
+  Saved: debug_output/20260413_160444_sp3d-scribbles-halfres_NasalSeg-retrieved_2026_03_11_P052.nii/prompt_iter_000/prediction_overlay_neel_synth-only.png
+    Isotropic: (96, 96, 82)
+  Saved: debug_output/20260413_160444_sp3d-scribbles-halfres_NasalSeg-retrieved_2026_03_11_P052.nii/prompt_iter_000/prediction_overlay_neel_synth-only_isotropic.png
+
+============================================================
+Session: 20260416_125340_sp3d-scribbles-halfres_COBRE_val-od_downsampled.nii
+============================================================
+
+  prompt_iter_000:
+    Volume: (96, 128, 96), spacing: [2. 2. 2.]
+    +27 / -34 voxels
+    Positive:
+      CC separation: 0 clicks, 4 scribble components
+    Negative:
+      CC separation: 0 clicks, 2 scribble components
+    Prediction: 3326 voxels
+    Selected 1 slices
+  Saved: debug_output/20260416_125340_sp3d-scribbles-halfres_COBRE_val-od_downsampled.nii/prompt_iter_000/prediction_overlay_neel_synth-only.png
+
+============================================================
+Session: 20260421_174456_sp3d-scribbles_COBRE_val-od.nii
+============================================================
+
+  prompt_iter_000:
+    Volume: (160, 224, 192), spacing: [1. 1. 1.]
+    +58 / -105 voxels
+    Positive:
+      CC separation: 5 clicks, 10 scribble components
+    Negative:
+      CC separation: 5 clicks, 14 scribble components
+    Prediction: 13421 voxels
+    Selected 1 slices
+  Saved: debug_output/20260421_174456_sp3d-scribbles_COBRE_val-od.nii/prompt_iter_000/prediction_overlay_neel_synth-only.png
+
+============================================================
+Session: 20260421_174936_neel_synth-only_COBRE_val-od_downsampled.nii
+============================================================
+
+  prompt_iter_000:
+    Volume: (96, 128, 96), spacing: [2. 2. 2.]
+    +40 / -87 voxels
+    Positive:
+      CC separation: 1 clicks, 5 scribble components
+    Negative:
+      CC separation: 0 clicks, 9 scribble components
+    Prediction: 4267 voxels
+    Selected 2 slices
+  Saved: debug_output/20260421_174936_neel_synth-only_COBRE_val-od_downsampled.nii/prompt_iter_000/prediction_overlay_neel_synth-only.png
+
+============================================================
+Session: 20260421_180039_neel_synth-real_COBRE_val-od_downsampled.nii
+============================================================
+
+  prompt_iter_000:
+    Volume: (96, 128, 96), spacing: [2. 2. 2.]
+    +48 / -70 voxels
+    Positive:
+      CC separation: 0 clicks, 1 scribble components
+    Negative:
+      CC separation: 0 clicks, 4 scribble components
+    Prediction: 5079 voxels
+    Selected 1 slices
+  Saved: debug_output/20260421_180039_neel_synth-real_COBRE_val-od_downsampled.nii/prompt_iter_000/prediction_overlay_neel_synth-only.png
+
+============================================================
+Session: 20260427_154340_neel_synth-only_CereVessMRA_CereVess_AB11308.nii
+============================================================
+
+  prompt_iter_000:
+    Volume: (192, 256, 64), spacing: [0.93819356 0.93819356 1.6001142 ]
+    +17 / -0 voxels
+    Positive:
+      CC separation: 2 clicks, 1 scribble components
+    Negative:
+    Prediction: 748 voxels
+    Selected 1 slices
+  Saved: debug_output/20260427_154340_neel_synth-only_CereVessMRA_CereVess_AB11308.nii/prompt_iter_000/prediction_overlay_neel_synth-only.png
+    Isotropic: (192, 256, 109)
+  Saved: debug_output/20260427_154340_neel_synth-only_CereVessMRA_CereVess_AB11308.nii/prompt_iter_000/prediction_overlay_neel_synth-only_isotropic.png
+
+============================================================
+Session: 20260427_154515_neel_synth-only_CereVessMRA_CereVess_AB11308.nii
+============================================================
+
+  prompt_iter_000:
+    Volume: (192, 256, 64), spacing: [0.93819356 0.93819356 1.6001142 ]
+    +7 / -0 voxels
+  WARNING: no in-plane scribbles, using fallback
+    Positive:
+      CC separation: 7 clicks, 0 scribble components
+    Negative:
+    Prediction: 1422 voxels
+    Selected 6 slices
+  Saved: debug_output/20260427_154515_neel_synth-only_CereVessMRA_CereVess_AB11308.nii/prompt_iter_000/prediction_overlay_neel_synth-only.png
+    Isotropic: (192, 256, 109)
+  Saved: debug_output/20260427_154515_neel_synth-only_CereVessMRA_CereVess_AB11308.nii/prompt_iter_000/prediction_overlay_neel_synth-only_isotropic.png
+
+============================================================
+Session: 20260427_154558_neel_synth-only_CereVessMRA_CereVess_AB11308.nii
+============================================================
+
+  prompt_iter_000:
+    Volume: (192, 256, 64), spacing: [0.93819356 0.93819356 1.6001142 ]
+    +21 / -0 voxels
+    Positive:
+      CC separation: 0 clicks, 2 scribble components
+    Negative:
+    Prediction: 12737 voxels
+    Selected 2 slices
+  Saved: debug_output/20260427_154558_neel_synth-only_CereVessMRA_CereVess_AB11308.nii/prompt_iter_000/prediction_overlay_neel_synth-only.png
+    Isotropic: (192, 256, 109)
+  Saved: debug_output/20260427_154558_neel_synth-only_CereVessMRA_CereVess_AB11308.nii/prompt_iter_000/prediction_overlay_neel_synth-only_isotropic.png
+
+============================================================
+Session: 20260427_154655_neel_synth-only_CereVessMRA_CereVess_AB11308.nii
+============================================================
+
+  prompt_iter_000:
+    Volume: (192, 256, 64), spacing: [0.93819356 0.93819356 1.6001142 ]
+    +30 / -0 voxels
+    Positive:
+      CC separation: 10 clicks, 2 scribble components
+    Negative:
+    Prediction: 1680 voxels
+    Selected 2 slices
+  Saved: debug_output/20260427_154655_neel_synth-only_CereVessMRA_CereVess_AB11308.nii/prompt_iter_000/prediction_overlay_neel_synth-only.png
+    Isotropic: (192, 256, 109)
+  Saved: debug_output/20260427_154655_neel_synth-only_CereVessMRA_CereVess_AB11308.nii/prompt_iter_000/prediction_overlay_neel_synth-only_isotropic.png
+
+============================================================
+Session: 20260427_154837_neel_synth-only_CereVessMRA_CereVess_Guys265.nii
+============================================================
+
+  prompt_iter_000:
+    Volume: (160, 192, 64), spacing: [0.9375    0.9375    1.6000003]
+    +12 / -0 voxels
+    Positive:
+      CC separation: 7 clicks, 1 scribble components
+    Negative:
+    Prediction: 1614 voxels
+    Selected 1 slices
+  Saved: debug_output/20260427_154837_neel_synth-only_CereVessMRA_CereVess_Guys265.nii/prompt_iter_000/prediction_overlay_neel_synth-only.png
+    Isotropic: (160, 192, 109)
+  Saved: debug_output/20260427_154837_neel_synth-only_CereVessMRA_CereVess_Guys265.nii/prompt_iter_000/prediction_overlay_neel_synth-only_isotropic.png
+
+============================================================
+Session: 20260427_155034_neel_synth-only_CereVessMRA_CereVess_HH278.nii
+============================================================
+
+  prompt_iter_000:
+    Volume: (192, 224, 64), spacing: [0.9375    0.9375    1.5999995]
+    +16 / -153 voxels
+    Positive:
+      CC separation: 10 clicks, 1 scribble components
+    Negative:
+      CC separation: 11 clicks, 31 scribble components
+    Prediction: 57872 voxels
+    Selected 6 slices
+  Saved: debug_output/20260427_155034_neel_synth-only_CereVessMRA_CereVess_HH278.nii/prompt_iter_000/prediction_overlay_neel_synth-only.png
+    Isotropic: (192, 224, 109)
+  Saved: debug_output/20260427_155034_neel_synth-only_CereVessMRA_CereVess_HH278.nii/prompt_iter_000/prediction_overlay_neel_synth-only_isotropic.png
+
+============================================================
+Session: 20260427_155311_neel_synth-only_CereVessMRA_CereVess_AB11308.nii
+============================================================
+
+  prompt_iter_000:
+    Volume: (192, 256, 64), spacing: [0.93819356 0.93819356 1.6001142 ]
+    +60 / -0 voxels
+    Positive:
+      CC separation: 0 clicks, 8 scribble components
+    Negative:
+    Prediction: 17522 voxels
+    Selected 2 slices
+  Saved: debug_output/20260427_155311_neel_synth-only_CereVessMRA_CereVess_AB11308.nii/prompt_iter_000/prediction_overlay_neel_synth-only.png
+    Isotropic: (192, 256, 109)
+  Saved: debug_output/20260427_155311_neel_synth-only_CereVessMRA_CereVess_AB11308.nii/prompt_iter_000/prediction_overlay_neel_synth-only_isotropic.png
+
+============================================================
+Session: 20260427_155349_neel_synth-only_CereVessMRA_CereVess_Guys265.nii
+============================================================
+
+  prompt_iter_000:
+    Volume: (160, 192, 64), spacing: [0.9375    0.9375    1.6000003]
+    +38 / -0 voxels
+    Positive:
+      CC separation: 4 clicks, 4 scribble components
+    Negative:
+    Prediction: 1557 voxels
+    Selected 1 slices
+  Saved: debug_output/20260427_155349_neel_synth-only_CereVessMRA_CereVess_Guys265.nii/prompt_iter_000/prediction_overlay_neel_synth-only.png
+    Isotropic: (160, 192, 109)
+  Saved: debug_output/20260427_155349_neel_synth-only_CereVessMRA_CereVess_Guys265.nii/prompt_iter_000/prediction_overlay_neel_synth-only_isotropic.png
+
+============================================================
+Session: 20260427_155457_neel_synth-only_CereVessMRA_CereVess_HH278.nii
+============================================================
+
+  prompt_iter_000:
+    Volume: (192, 224, 64), spacing: [0.9375    0.9375    1.5999995]
+    +31 / -0 voxels
+    Positive:
+      CC separation: 15 clicks, 1 scribble components
+    Negative:
+    Prediction: 56907 voxels
+    Selected 3 slices
+  Saved: debug_output/20260427_155457_neel_synth-only_CereVessMRA_CereVess_HH278.nii/prompt_iter_000/prediction_overlay_neel_synth-only.png
+    Isotropic: (192, 224, 109)
+  Saved: debug_output/20260427_155457_neel_synth-only_CereVessMRA_CereVess_HH278.nii/prompt_iter_000/prediction_overlay_neel_synth-only_isotropic.png
+
+============================================================
+Session: 20260427_155602_neel_synth-only_CereVessMRA_CereVess_HH278.nii
+============================================================
+
+  prompt_iter_000:
+    Volume: (192, 224, 64), spacing: [0.9375    0.9375    1.5999995]
+    +27 / -107 voxels
+    Positive:
+      CC separation: 5 clicks, 1 scribble components
+    Negative:
+      CC separation: 10 clicks, 22 scribble components
+    Prediction: 2129 voxels
+    Selected 2 slices
+  Saved: debug_output/20260427_155602_neel_synth-only_CereVessMRA_CereVess_HH278.nii/prompt_iter_000/prediction_overlay_neel_synth-only.png
+    Isotropic: (192, 224, 109)
+  Saved: debug_output/20260427_155602_neel_synth-only_CereVessMRA_CereVess_HH278.nii/prompt_iter_000/prediction_overlay_neel_synth-only_isotropic.png
+
+============================================================
+Session: 20260427_155701_neel_synth-only_CereVessMRA_CereVess_HH278.nii
+============================================================
+
+  prompt_iter_000:
+    Volume: (192, 224, 64), spacing: [0.9375    0.9375    1.5999995]
+    +92 / -0 voxels
+    Positive:
+      CC separation: 3 clicks, 7 scribble components
+    Negative:
+    Prediction: 2278 voxels
+    Selected 3 slices
+  Saved: debug_output/20260427_155701_neel_synth-only_CereVessMRA_CereVess_HH278.nii/prompt_iter_000/prediction_overlay_neel_synth-only.png
+    Isotropic: (192, 224, 109)
+  Saved: debug_output/20260427_155701_neel_synth-only_CereVessMRA_CereVess_HH278.nii/prompt_iter_000/prediction_overlay_neel_synth-only_isotropic.png
+
+============================================================
+Session: 20260427_155811_neel_synth-only_CereVessMRA_CereVess_AB11308.nii
+============================================================
+
+  prompt_iter_000:
+    Volume: (192, 256, 64), spacing: [0.93819356 0.93819356 1.6001142 ]
+    +8 / -0 voxels
+  WARNING: no in-plane scribbles, using fallback
+    Positive:
+      CC separation: 8 clicks, 0 scribble components
+    Negative:
+    Prediction: 1785 voxels
+    Selected 6 slices
+  Saved: debug_output/20260427_155811_neel_synth-only_CereVessMRA_CereVess_AB11308.nii/prompt_iter_000/prediction_overlay_neel_synth-only.png
+    Isotropic: (192, 256, 109)
+  Saved: debug_output/20260427_155811_neel_synth-only_CereVessMRA_CereVess_AB11308.nii/prompt_iter_000/prediction_overlay_neel_synth-only_isotropic.png
+
+============================================================
+Session: 20260427_160313_neel_synth-only_CereVessMRA_CereVess_HH278.nii
+============================================================
+
+  prompt_iter_000:
+    Volume: (192, 224, 64), spacing: [0.9375    0.9375    1.5999995]
+    +39 / -95 voxels
+    Positive:
+      CC separation: 2 clicks, 3 scribble components
+    Negative:
+      CC separation: 9 clicks, 23 scribble components
+    Prediction: 2297 voxels
+    Selected 3 slices
+  Saved: debug_output/20260427_160313_neel_synth-only_CereVessMRA_CereVess_HH278.nii/prompt_iter_000/prediction_overlay_neel_synth-only.png
+    Isotropic: (192, 224, 109)
+  Saved: debug_output/20260427_160313_neel_synth-only_CereVessMRA_CereVess_HH278.nii/prompt_iter_000/prediction_overlay_neel_synth-only_isotropic.png
+
+============================================================
+Session: 20260427_171531_neel_synth-only_CereVessMRA_CereVess_HH278.nii
+============================================================
+
+  prompt_iter_000:
+    Volume: (192, 224, 64), spacing: [0.9375    0.9375    1.5999995]
+    +30 / -0 voxels
+    Positive:
+      CC separation: 7 clicks, 4 scribble components
+    Negative:
+    Prediction: 2485 voxels
+    Selected 2 slices
+  Saved: debug_output/20260427_171531_neel_synth-only_CereVessMRA_CereVess_HH278.nii/prompt_iter_000/prediction_overlay_neel_synth-only.png
+    Isotropic: (192, 224, 109)
+  Saved: debug_output/20260427_171531_neel_synth-only_CereVessMRA_CereVess_HH278.nii/prompt_iter_000/prediction_overlay_neel_synth-only_isotropic.png
+
+============================================================
+Session: 20260427_171618_neel_synth-only_CereVessMRA_CereVess_HH278.nii
+============================================================
+
+  prompt_iter_000:
+    Volume: (192, 224, 64), spacing: [0.9375    0.9375    1.5999995]
+    +35 / -95 voxels
+    Positive:
+      CC separation: 3 clicks, 2 scribble components
+    Negative:
+      CC separation: 16 clicks, 23 scribble components
+    Prediction: 3175 voxels
+    Selected 2 slices
+  Saved: debug_output/20260427_171618_neel_synth-only_CereVessMRA_CereVess_HH278.nii/prompt_iter_000/prediction_overlay_neel_synth-only.png
+    Isotropic: (192, 224, 109)
+  Saved: debug_output/20260427_171618_neel_synth-only_CereVessMRA_CereVess_HH278.nii/prompt_iter_000/prediction_overlay_neel_synth-only_isotropic.png
+
+============================================================
+Session: 20260427_171924_neel_synth-only_CereVessMRA_CereVess_Guys265.nii
+============================================================
+
+  prompt_iter_000:
+    Volume: (160, 192, 64), spacing: [0.9375    0.9375    1.6000003]
+    +162 / -0 voxels
+    Positive:
+      CC separation: 4 clicks, 14 scribble components
+    Negative:
+    Prediction: 120374 voxels
+    Selected 6 slices
+  Saved: debug_output/20260427_171924_neel_synth-only_CereVessMRA_CereVess_Guys265.nii/prompt_iter_000/prediction_overlay_neel_synth-only.png
+    Isotropic: (160, 192, 109)
+  Saved: debug_output/20260427_171924_neel_synth-only_CereVessMRA_CereVess_Guys265.nii/prompt_iter_000/prediction_overlay_neel_synth-only_isotropic.png
+
+============================================================
+Session: 20260427_172132_neel_synth-only_CereVessMRA_CereVess_HH278.nii
+============================================================
+
+  prompt_iter_000:
+    Volume: (192, 224, 64), spacing: [0.9375    0.9375    1.5999995]
+    +140 / -0 voxels
+    Positive:
+      CC separation: 8 clicks, 16 scribble components
+    Negative:
+    Prediction: 86795 voxels
+    Selected 6 slices
+  Saved: debug_output/20260427_172132_neel_synth-only_CereVessMRA_CereVess_HH278.nii/prompt_iter_000/prediction_overlay_neel_synth-only.png
+    Isotropic: (192, 224, 109)
+  Saved: debug_output/20260427_172132_neel_synth-only_CereVessMRA_CereVess_HH278.nii/prompt_iter_000/prediction_overlay_neel_synth-only_isotropic.png
+
+############################################################
+# Model: neel_synth-real
+############################################################
+Model loaded: neel_synth-real on cuda
+  Gaussian clicks: sigma=2, truncate=3, normalize=None
+
+============================================================
+Session: 20260408_170147_sp3d-scribbles-halfres_AMOS_0223.nii
+============================================================
+
+  prompt_iter_000:
+    Volume: (256, 256, 128), spacing: [1.3007812 1.3007812 4.       ]
+    +74 / -234 voxels
+    Positive:
+      CC separation: 2 clicks, 4 scribble components
+    Negative:
+      CC separation: 2 clicks, 18 scribble components
+    Prediction: 56436 voxels
+    Selected 3 slices
+  Saved: debug_output/20260408_170147_sp3d-scribbles-halfres_AMOS_0223.nii/prompt_iter_000/prediction_overlay_neel_synth-real.png
+    Isotropic: (256, 256, 394)
+  Saved: debug_output/20260408_170147_sp3d-scribbles-halfres_AMOS_0223.nii/prompt_iter_000/prediction_overlay_neel_synth-real_isotropic.png
+
+============================================================
+Session: 20260408_171412_sp3d-scribbles-halfres_AMOS_0223.nii
+============================================================
+
+  prompt_iter_000:
+    Volume: (256, 256, 128), spacing: [1.3007812 1.3007812 4.       ]
+    +1 / -1 voxels
+  WARNING: no in-plane scribbles, using fallback
+    Positive:
+      CC separation: 1 clicks, 0 scribble components
+    Negative:
+      CC separation: 1 clicks, 0 scribble components
+    Prediction: 68164 voxels
+    Selected 6 slices
+  Saved: debug_output/20260408_171412_sp3d-scribbles-halfres_AMOS_0223.nii/prompt_iter_000/prediction_overlay_neel_synth-real.png
+    Isotropic: (256, 256, 394)
+  Saved: debug_output/20260408_171412_sp3d-scribbles-halfres_AMOS_0223.nii/prompt_iter_000/prediction_overlay_neel_synth-real_isotropic.png
+
+============================================================
+Session: 20260408_171721_sp3d-scribbles-halfres_AMOS_0223.nii
+============================================================
+
+  prompt_iter_000:
+    Volume: (256, 256, 128), spacing: [1.3007812 1.3007812 4.       ]
+    +99 / -143 voxels
+    Positive:
+      CC separation: 3 clicks, 11 scribble components
+    Negative:
+      CC separation: 0 clicks, 13 scribble components
+    Prediction: 171487 voxels
+    Selected 5 slices
+  Saved: debug_output/20260408_171721_sp3d-scribbles-halfres_AMOS_0223.nii/prompt_iter_000/prediction_overlay_neel_synth-real.png
+    Isotropic: (256, 256, 394)
+  Saved: debug_output/20260408_171721_sp3d-scribbles-halfres_AMOS_0223.nii/prompt_iter_000/prediction_overlay_neel_synth-real_isotropic.png
+
+============================================================
+Session: 20260408_173114_sp3d-scribbles-halfres_LiTS_4.nii
+============================================================
+
+  prompt_iter_000:
+    Volume: (256, 256, 448), spacing: [1.804688 1.804688 1.6     ]
+    +338 / -196 voxels
+    Positive:
+      CC separation: 11 clicks, 49 scribble components
+    Negative:
+      CC separation: 0 clicks, 29 scribble components
+    Prediction: 305360 voxels
+    Selected 1 slices
+  Saved: debug_output/20260408_173114_sp3d-scribbles-halfres_LiTS_4.nii/prompt_iter_000/prediction_overlay_neel_synth-real.png
+    Isotropic: (289, 289, 448)
+  Saved: debug_output/20260408_173114_sp3d-scribbles-halfres_LiTS_4.nii/prompt_iter_000/prediction_overlay_neel_synth-real_isotropic.png
+
+============================================================
+Session: 20260408_174024_sp3d-scribbles-halfres_LiTS_4.nii
+============================================================
+
+  prompt_iter_000:
+    Volume: (256, 256, 448), spacing: [1.804688 1.804688 1.6     ]
+    +57 / -126 voxels
+    Positive:
+      CC separation: 0 clicks, 6 scribble components
+    Negative:
+      CC separation: 1 clicks, 10 scribble components
+    Prediction: 10294 voxels
+    Selected 6 slices
+  Saved: debug_output/20260408_174024_sp3d-scribbles-halfres_LiTS_4.nii/prompt_iter_000/prediction_overlay_neel_synth-real.png
+    Isotropic: (289, 289, 448)
+  Saved: debug_output/20260408_174024_sp3d-scribbles-halfres_LiTS_4.nii/prompt_iter_000/prediction_overlay_neel_synth-real_isotropic.png
+
+============================================================
+Session: 20260408_175012_sp3d-scribbles-halfres_LiTS_4.nii
+============================================================
+
+  prompt_iter_000:
+    Volume: (256, 256, 448), spacing: [1.804688 1.804688 1.6     ]
+    +3 / -19 voxels
+    Positive:
+      CC separation: 3 clicks, 0 scribble components
+    Negative:
+      CC separation: 4 clicks, 3 scribble components
+    Prediction: 85903 voxels
+    Selected 2 slices
+  Saved: debug_output/20260408_175012_sp3d-scribbles-halfres_LiTS_4.nii/prompt_iter_000/prediction_overlay_neel_synth-real.png
+    Isotropic: (289, 289, 448)
+  Saved: debug_output/20260408_175012_sp3d-scribbles-halfres_LiTS_4.nii/prompt_iter_000/prediction_overlay_neel_synth-real_isotropic.png
+
+============================================================
+Session: 20260413_143829_sp3d-scribbles-halfres_MouseOrgans-contrast_ct_M06.nii
+============================================================
+
+  prompt_iter_000:
+    Volume: (160, 128, 256), spacing: [0.28 0.28 0.28]
+    +7 / -109 voxels
+    Positive:
+      CC separation: 7 clicks, 0 scribble components
+    Negative:
+      CC separation: 4 clicks, 13 scribble components
+    Prediction: 18236 voxels
+    Selected 4 slices
+  Saved: debug_output/20260413_143829_sp3d-scribbles-halfres_MouseOrgans-contrast_ct_M06.nii/prompt_iter_000/prediction_overlay_neel_synth-real.png
+
+============================================================
+Session: 20260413_144307_sp3d-scribbles-halfres_MouseOrgans-contrast_ct_M06.nii
+============================================================
+
+  prompt_iter_000:
+    Volume: (160, 128, 256), spacing: [0.28 0.28 0.28]
+    +17 / -73 voxels
+    Positive:
+      CC separation: 2 clicks, 2 scribble components
+    Negative:
+      CC separation: 3 clicks, 7 scribble components
+    Prediction: 12016 voxels
+    Selected 4 slices
+  Saved: debug_output/20260413_144307_sp3d-scribbles-halfres_MouseOrgans-contrast_ct_M06.nii/prompt_iter_000/prediction_overlay_neel_synth-real.png
+
+============================================================
+Session: 20260413_144559_sp3d-scribbles-halfres_MouseOrgans-contrast_ct_M06.nii
+============================================================
+
+  prompt_iter_000:
+    Volume: (160, 128, 256), spacing: [0.28 0.28 0.28]
+    +53 / -126 voxels
+    Positive:
+      CC separation: 4 clicks, 6 scribble components
+    Negative:
+      CC separation: 5 clicks, 11 scribble components
+    Prediction: 1839 voxels
+    Selected 6 slices
+  Saved: debug_output/20260413_144559_sp3d-scribbles-halfres_MouseOrgans-contrast_ct_M06.nii/prompt_iter_000/prediction_overlay_neel_synth-real.png
+
+============================================================
+Session: 20260413_155009_sp3d-scribbles-halfres_NasalSeg-retrieved_2026_03_11_P052.nii
+============================================================
+
+  prompt_iter_000:
+    Volume: (96, 96, 32), spacing: [1.171875 1.171875 3.      ]
+    +8 / -44 voxels
+    Positive:
+      CC separation: 8 clicks, 0 scribble components
+    Negative:
+      CC separation: 3 clicks, 2 scribble components
+    Prediction: 5431 voxels
+    Selected 2 slices
+  Saved: debug_output/20260413_155009_sp3d-scribbles-halfres_NasalSeg-retrieved_2026_03_11_P052.nii/prompt_iter_000/prediction_overlay_neel_synth-real.png
+    Isotropic: (96, 96, 82)
+  Saved: debug_output/20260413_155009_sp3d-scribbles-halfres_NasalSeg-retrieved_2026_03_11_P052.nii/prompt_iter_000/prediction_overlay_neel_synth-real_isotropic.png
+
+============================================================
+Session: 20260413_160444_sp3d-scribbles-halfres_NasalSeg-retrieved_2026_03_11_P052.nii
+============================================================
+
+  prompt_iter_000:
+    Volume: (96, 96, 32), spacing: [1.171875 1.171875 3.      ]
+    +8 / -21 voxels
+    Positive:
+      CC separation: 8 clicks, 0 scribble components
+    Negative:
+      CC separation: 3 clicks, 2 scribble components
+    Prediction: 7623 voxels
+    Selected 5 slices
+  Saved: debug_output/20260413_160444_sp3d-scribbles-halfres_NasalSeg-retrieved_2026_03_11_P052.nii/prompt_iter_000/prediction_overlay_neel_synth-real.png
+    Isotropic: (96, 96, 82)
+  Saved: debug_output/20260413_160444_sp3d-scribbles-halfres_NasalSeg-retrieved_2026_03_11_P052.nii/prompt_iter_000/prediction_overlay_neel_synth-real_isotropic.png
+
+============================================================
+Session: 20260416_125340_sp3d-scribbles-halfres_COBRE_val-od_downsampled.nii
+============================================================
+
+  prompt_iter_000:
+    Volume: (96, 128, 96), spacing: [2. 2. 2.]
+    +27 / -34 voxels
+    Positive:
+      CC separation: 0 clicks, 4 scribble components
+    Negative:
+      CC separation: 0 clicks, 2 scribble components
+    Prediction: 4712 voxels
+    Selected 1 slices
+  Saved: debug_output/20260416_125340_sp3d-scribbles-halfres_COBRE_val-od_downsampled.nii/prompt_iter_000/prediction_overlay_neel_synth-real.png
+
+============================================================
+Session: 20260421_174456_sp3d-scribbles_COBRE_val-od.nii
+============================================================
+
+  prompt_iter_000:
+    Volume: (160, 224, 192), spacing: [1. 1. 1.]
+    +58 / -105 voxels
+    Positive:
+      CC separation: 5 clicks, 10 scribble components
+    Negative:
+      CC separation: 5 clicks, 14 scribble components
+    Prediction: 12977 voxels
+    Selected 1 slices
+  Saved: debug_output/20260421_174456_sp3d-scribbles_COBRE_val-od.nii/prompt_iter_000/prediction_overlay_neel_synth-real.png
+
+============================================================
+Session: 20260421_174936_neel_synth-only_COBRE_val-od_downsampled.nii
+============================================================
+
+  prompt_iter_000:
+    Volume: (96, 128, 96), spacing: [2. 2. 2.]
+    +40 / -87 voxels
+    Positive:
+      CC separation: 1 clicks, 5 scribble components
+    Negative:
+      CC separation: 0 clicks, 9 scribble components
+    Prediction: 4685 voxels
+    Selected 2 slices
+  Saved: debug_output/20260421_174936_neel_synth-only_COBRE_val-od_downsampled.nii/prompt_iter_000/prediction_overlay_neel_synth-real.png
+
+============================================================
+Session: 20260421_180039_neel_synth-real_COBRE_val-od_downsampled.nii
+============================================================
+
+  prompt_iter_000:
+    Volume: (96, 128, 96), spacing: [2. 2. 2.]
+    +48 / -70 voxels
+    Positive:
+      CC separation: 0 clicks, 1 scribble components
+    Negative:
+      CC separation: 0 clicks, 4 scribble components
+    Prediction: 5003 voxels
+    Selected 1 slices
+  Saved: debug_output/20260421_180039_neel_synth-real_COBRE_val-od_downsampled.nii/prompt_iter_000/prediction_overlay_neel_synth-real.png
+
+============================================================
+Session: 20260427_154340_neel_synth-only_CereVessMRA_CereVess_AB11308.nii
+============================================================
+
+  prompt_iter_000:
+    Volume: (192, 256, 64), spacing: [0.93819356 0.93819356 1.6001142 ]
+    +17 / -0 voxels
+    Positive:
+      CC separation: 2 clicks, 1 scribble components
+    Negative:
+    Prediction: 1240 voxels
+    Selected 1 slices
+  Saved: debug_output/20260427_154340_neel_synth-only_CereVessMRA_CereVess_AB11308.nii/prompt_iter_000/prediction_overlay_neel_synth-real.png
+    Isotropic: (192, 256, 109)
+  Saved: debug_output/20260427_154340_neel_synth-only_CereVessMRA_CereVess_AB11308.nii/prompt_iter_000/prediction_overlay_neel_synth-real_isotropic.png
+
+============================================================
+Session: 20260427_154515_neel_synth-only_CereVessMRA_CereVess_AB11308.nii
+============================================================
+
+  prompt_iter_000:
+    Volume: (192, 256, 64), spacing: [0.93819356 0.93819356 1.6001142 ]
+    +7 / -0 voxels
+  WARNING: no in-plane scribbles, using fallback
+    Positive:
+      CC separation: 7 clicks, 0 scribble components
+    Negative:
+    Prediction: 1901 voxels
+    Selected 6 slices
+  Saved: debug_output/20260427_154515_neel_synth-only_CereVessMRA_CereVess_AB11308.nii/prompt_iter_000/prediction_overlay_neel_synth-real.png
+    Isotropic: (192, 256, 109)
+  Saved: debug_output/20260427_154515_neel_synth-only_CereVessMRA_CereVess_AB11308.nii/prompt_iter_000/prediction_overlay_neel_synth-real_isotropic.png
+
+============================================================
+Session: 20260427_154558_neel_synth-only_CereVessMRA_CereVess_AB11308.nii
+============================================================
+
+  prompt_iter_000:
+    Volume: (192, 256, 64), spacing: [0.93819356 0.93819356 1.6001142 ]
+    +21 / -0 voxels
+    Positive:
+      CC separation: 0 clicks, 2 scribble components
+    Negative:
+    Prediction: 7155 voxels
+    Selected 2 slices
+  Saved: debug_output/20260427_154558_neel_synth-only_CereVessMRA_CereVess_AB11308.nii/prompt_iter_000/prediction_overlay_neel_synth-real.png
+    Isotropic: (192, 256, 109)
+  Saved: debug_output/20260427_154558_neel_synth-only_CereVessMRA_CereVess_AB11308.nii/prompt_iter_000/prediction_overlay_neel_synth-real_isotropic.png
+
+============================================================
+Session: 20260427_154655_neel_synth-only_CereVessMRA_CereVess_AB11308.nii
+============================================================
+
+  prompt_iter_000:
+    Volume: (192, 256, 64), spacing: [0.93819356 0.93819356 1.6001142 ]
+    +30 / -0 voxels
+    Positive:
+      CC separation: 10 clicks, 2 scribble components
+    Negative:
+    Prediction: 2872 voxels
+    Selected 2 slices
+  Saved: debug_output/20260427_154655_neel_synth-only_CereVessMRA_CereVess_AB11308.nii/prompt_iter_000/prediction_overlay_neel_synth-real.png
+    Isotropic: (192, 256, 109)
+  Saved: debug_output/20260427_154655_neel_synth-only_CereVessMRA_CereVess_AB11308.nii/prompt_iter_000/prediction_overlay_neel_synth-real_isotropic.png
+
+============================================================
+Session: 20260427_154837_neel_synth-only_CereVessMRA_CereVess_Guys265.nii
+============================================================
+
+  prompt_iter_000:
+    Volume: (160, 192, 64), spacing: [0.9375    0.9375    1.6000003]
+    +12 / -0 voxels
+    Positive:
+      CC separation: 7 clicks, 1 scribble components
+    Negative:
+    Prediction: 945 voxels
+    Selected 1 slices
+  Saved: debug_output/20260427_154837_neel_synth-only_CereVessMRA_CereVess_Guys265.nii/prompt_iter_000/prediction_overlay_neel_synth-real.png
+    Isotropic: (160, 192, 109)
+  Saved: debug_output/20260427_154837_neel_synth-only_CereVessMRA_CereVess_Guys265.nii/prompt_iter_000/prediction_overlay_neel_synth-real_isotropic.png
+
+============================================================
+Session: 20260427_155034_neel_synth-only_CereVessMRA_CereVess_HH278.nii
+============================================================
+
+  prompt_iter_000:
+    Volume: (192, 224, 64), spacing: [0.9375    0.9375    1.5999995]
+    +16 / -153 voxels
+    Positive:
+      CC separation: 10 clicks, 1 scribble components
+    Negative:
+      CC separation: 11 clicks, 31 scribble components
+    Prediction: 83703 voxels
+    Selected 6 slices
+  Saved: debug_output/20260427_155034_neel_synth-only_CereVessMRA_CereVess_HH278.nii/prompt_iter_000/prediction_overlay_neel_synth-real.png
+    Isotropic: (192, 224, 109)
+  Saved: debug_output/20260427_155034_neel_synth-only_CereVessMRA_CereVess_HH278.nii/prompt_iter_000/prediction_overlay_neel_synth-real_isotropic.png
+
+============================================================
+Session: 20260427_155311_neel_synth-only_CereVessMRA_CereVess_AB11308.nii
+============================================================
+
+  prompt_iter_000:
+    Volume: (192, 256, 64), spacing: [0.93819356 0.93819356 1.6001142 ]
+    +60 / -0 voxels
+    Positive:
+      CC separation: 0 clicks, 8 scribble components
+    Negative:
+    Prediction: 12309 voxels
+    Selected 2 slices
+  Saved: debug_output/20260427_155311_neel_synth-only_CereVessMRA_CereVess_AB11308.nii/prompt_iter_000/prediction_overlay_neel_synth-real.png
+    Isotropic: (192, 256, 109)
+  Saved: debug_output/20260427_155311_neel_synth-only_CereVessMRA_CereVess_AB11308.nii/prompt_iter_000/prediction_overlay_neel_synth-real_isotropic.png
+
+============================================================
+Session: 20260427_155349_neel_synth-only_CereVessMRA_CereVess_Guys265.nii
+============================================================
+
+  prompt_iter_000:
+    Volume: (160, 192, 64), spacing: [0.9375    0.9375    1.6000003]
+    +38 / -0 voxels
+    Positive:
+      CC separation: 4 clicks, 4 scribble components
+    Negative:
+    Prediction: 2235 voxels
+    Selected 1 slices
+  Saved: debug_output/20260427_155349_neel_synth-only_CereVessMRA_CereVess_Guys265.nii/prompt_iter_000/prediction_overlay_neel_synth-real.png
+    Isotropic: (160, 192, 109)
+  Saved: debug_output/20260427_155349_neel_synth-only_CereVessMRA_CereVess_Guys265.nii/prompt_iter_000/prediction_overlay_neel_synth-real_isotropic.png
+
+============================================================
+Session: 20260427_155457_neel_synth-only_CereVessMRA_CereVess_HH278.nii
+============================================================
+
+  prompt_iter_000:
+    Volume: (192, 224, 64), spacing: [0.9375    0.9375    1.5999995]
+    +31 / -0 voxels
+    Positive:
+      CC separation: 15 clicks, 1 scribble components
+    Negative:
+    Prediction: 138583 voxels
+    Selected 3 slices
+  Saved: debug_output/20260427_155457_neel_synth-only_CereVessMRA_CereVess_HH278.nii/prompt_iter_000/prediction_overlay_neel_synth-real.png
+    Isotropic: (192, 224, 109)
+  Saved: debug_output/20260427_155457_neel_synth-only_CereVessMRA_CereVess_HH278.nii/prompt_iter_000/prediction_overlay_neel_synth-real_isotropic.png
+
+============================================================
+Session: 20260427_155602_neel_synth-only_CereVessMRA_CereVess_HH278.nii
+============================================================
+
+  prompt_iter_000:
+    Volume: (192, 224, 64), spacing: [0.9375    0.9375    1.5999995]
+    +27 / -107 voxels
+    Positive:
+      CC separation: 5 clicks, 1 scribble components
+    Negative:
+      CC separation: 10 clicks, 22 scribble components
+    Prediction: 3102 voxels
+    Selected 2 slices
+  Saved: debug_output/20260427_155602_neel_synth-only_CereVessMRA_CereVess_HH278.nii/prompt_iter_000/prediction_overlay_neel_synth-real.png
+    Isotropic: (192, 224, 109)
+  Saved: debug_output/20260427_155602_neel_synth-only_CereVessMRA_CereVess_HH278.nii/prompt_iter_000/prediction_overlay_neel_synth-real_isotropic.png
+
+============================================================
+Session: 20260427_155701_neel_synth-only_CereVessMRA_CereVess_HH278.nii
+============================================================
+
+  prompt_iter_000:
+    Volume: (192, 224, 64), spacing: [0.9375    0.9375    1.5999995]
+    +92 / -0 voxels
+    Positive:
+      CC separation: 3 clicks, 7 scribble components
+    Negative:
+    Prediction: 1853 voxels
+    Selected 3 slices
+  Saved: debug_output/20260427_155701_neel_synth-only_CereVessMRA_CereVess_HH278.nii/prompt_iter_000/prediction_overlay_neel_synth-real.png
+    Isotropic: (192, 224, 109)
+  Saved: debug_output/20260427_155701_neel_synth-only_CereVessMRA_CereVess_HH278.nii/prompt_iter_000/prediction_overlay_neel_synth-real_isotropic.png
+
+============================================================
+Session: 20260427_155811_neel_synth-only_CereVessMRA_CereVess_AB11308.nii
+============================================================
+
+  prompt_iter_000:
+    Volume: (192, 256, 64), spacing: [0.93819356 0.93819356 1.6001142 ]
+    +8 / -0 voxels
+  WARNING: no in-plane scribbles, using fallback
+    Positive:
+      CC separation: 8 clicks, 0 scribble components
+    Negative:
+    Prediction: 3113 voxels
+    Selected 6 slices
+  Saved: debug_output/20260427_155811_neel_synth-only_CereVessMRA_CereVess_AB11308.nii/prompt_iter_000/prediction_overlay_neel_synth-real.png
+    Isotropic: (192, 256, 109)
+  Saved: debug_output/20260427_155811_neel_synth-only_CereVessMRA_CereVess_AB11308.nii/prompt_iter_000/prediction_overlay_neel_synth-real_isotropic.png
+
+============================================================
+Session: 20260427_160313_neel_synth-only_CereVessMRA_CereVess_HH278.nii
+============================================================
+
+  prompt_iter_000:
+    Volume: (192, 224, 64), spacing: [0.9375    0.9375    1.5999995]
+    +39 / -95 voxels
+    Positive:
+      CC separation: 2 clicks, 3 scribble components
+    Negative:
+      CC separation: 9 clicks, 23 scribble components
+    Prediction: 2795 voxels
+    Selected 3 slices
+  Saved: debug_output/20260427_160313_neel_synth-only_CereVessMRA_CereVess_HH278.nii/prompt_iter_000/prediction_overlay_neel_synth-real.png
+    Isotropic: (192, 224, 109)
+  Saved: debug_output/20260427_160313_neel_synth-only_CereVessMRA_CereVess_HH278.nii/prompt_iter_000/prediction_overlay_neel_synth-real_isotropic.png
+
+============================================================
+Session: 20260427_171531_neel_synth-only_CereVessMRA_CereVess_HH278.nii
+============================================================
+
+  prompt_iter_000:
+    Volume: (192, 224, 64), spacing: [0.9375    0.9375    1.5999995]
+    +30 / -0 voxels
+    Positive:
+      CC separation: 7 clicks, 4 scribble components
+    Negative:
+    Prediction: 2265 voxels
+    Selected 2 slices
+  Saved: debug_output/20260427_171531_neel_synth-only_CereVessMRA_CereVess_HH278.nii/prompt_iter_000/prediction_overlay_neel_synth-real.png
+    Isotropic: (192, 224, 109)
+  Saved: debug_output/20260427_171531_neel_synth-only_CereVessMRA_CereVess_HH278.nii/prompt_iter_000/prediction_overlay_neel_synth-real_isotropic.png
+
+============================================================
+Session: 20260427_171618_neel_synth-only_CereVessMRA_CereVess_HH278.nii
+============================================================
+
+  prompt_iter_000:
+    Volume: (192, 224, 64), spacing: [0.9375    0.9375    1.5999995]
+    +35 / -95 voxels
+    Positive:
+      CC separation: 3 clicks, 2 scribble components
+    Negative:
+      CC separation: 16 clicks, 23 scribble components
+    Prediction: 2068 voxels
+    Selected 2 slices
+  Saved: debug_output/20260427_171618_neel_synth-only_CereVessMRA_CereVess_HH278.nii/prompt_iter_000/prediction_overlay_neel_synth-real.png
+    Isotropic: (192, 224, 109)
+  Saved: debug_output/20260427_171618_neel_synth-only_CereVessMRA_CereVess_HH278.nii/prompt_iter_000/prediction_overlay_neel_synth-real_isotropic.png
+
+============================================================
+Session: 20260427_171924_neel_synth-only_CereVessMRA_CereVess_Guys265.nii
+============================================================
+
+  prompt_iter_000:
+    Volume: (160, 192, 64), spacing: [0.9375    0.9375    1.6000003]
+    +162 / -0 voxels
+    Positive:
+      CC separation: 4 clicks, 14 scribble components
+    Negative:
+    Prediction: 220962 voxels
+    Selected 6 slices
+  Saved: debug_output/20260427_171924_neel_synth-only_CereVessMRA_CereVess_Guys265.nii/prompt_iter_000/prediction_overlay_neel_synth-real.png
+    Isotropic: (160, 192, 109)
+  Saved: debug_output/20260427_171924_neel_synth-only_CereVessMRA_CereVess_Guys265.nii/prompt_iter_000/prediction_overlay_neel_synth-real_isotropic.png
+
+============================================================
+Session: 20260427_172132_neel_synth-only_CereVessMRA_CereVess_HH278.nii
+============================================================
+
+  prompt_iter_000:
+    Volume: (192, 224, 64), spacing: [0.9375    0.9375    1.5999995]
+    +140 / -0 voxels
+    Positive:
+      CC separation: 8 clicks, 16 scribble components
+    Negative:
+    Prediction: 197169 voxels
+    Selected 6 slices
+  Saved: debug_output/20260427_172132_neel_synth-only_CereVessMRA_CereVess_HH278.nii/prompt_iter_000/prediction_overlay_neel_synth-real.png
+    Isotropic: (192, 224, 109)
+  Saved: debug_output/20260427_172132_neel_synth-only_CereVessMRA_CereVess_HH278.nii/prompt_iter_000/prediction_overlay_neel_synth-real_isotropic.png
+
+Done.
+[2026-04-27T21:19:16-04:00] Finished predict_debug.py
