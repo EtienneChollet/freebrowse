@@ -257,9 +257,9 @@ if enable_ai:
         enable_history=enable_ai_history,
     ))
 
-# Mount static directories AFTER all API routes
-app.mount("/static", StaticFiles(directory=static_dir, html=True), name="static")
-
 # Only mount data directory if not in serverless mode
 if not serverless_mode:
     app.mount("/data", StaticFiles(directory=data_dir, html=False), name="data")
+
+# Mount frontend static files at root LAST (catch-all)
+app.mount("/", StaticFiles(directory=static_dir, html=True), name="static")
