@@ -71,6 +71,10 @@ class ScribblePrompt3dInferenceRequest(BaseModel):
     niivue_dims: List[int]
     volume_nifti: Union[str, None] = None
 
+class VoxelPromptRequest(BaseModel):
+    session_id: str
+    text: str
+
 app = FastAPI()
 
 # Define API routes BEFORE static file mounts to prevent catch-all behavior
@@ -256,6 +260,13 @@ if enable_ai:
         enabled=True,
         enable_history=enable_ai_history,
     ))
+
+@app.post('/voxelprompt')
+def voxelprompt(request: VoxelPromptRequest):
+    """Receive text prompt from frontend VoxelPrompt textbox."""
+    print(f"VoxelPrompt request: session_id={request.session_id}, text={request.text}")
+    return {"status": "ok"}
+
 
 # Only mount data directory if not in serverless mode
 if not serverless_mode:
