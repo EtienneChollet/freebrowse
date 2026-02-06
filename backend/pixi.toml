@@ -25,6 +25,7 @@ AI_SESSION_CACHE_TTL_SECONDS = "1800"
 SCENE_SCHEMA_ID = "freebrowse"
 IMAGING_EXTENSIONS = '["*.nii", "*.nii.gz"]'
 SERVERLESS_MODE = "false"
+MASTER_JSON = "../data/master_rating_json_elucid.txt"
 
 [tasks.dev-serverless]
 cmd = """
