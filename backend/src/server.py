@@ -84,9 +84,25 @@ class ScribblePrompt3dInferenceRequest(BaseModel):
     volume_data: Union[str, None] = None
     affine: Union[List[float], None] = None
 
+
 class VoxelPromptRequest(BaseModel):
     session_id: str
     text: str
+
+
+class RatingInitRequest(BaseModel):
+    name: str
+    seed: int
+
+
+class RatingSubmitRequest(BaseModel):
+    session_id: str
+    rating: int
+
+
+class RatingNextRequest(BaseModel):
+    session_id: str
+
 
 app = FastAPI()
 
@@ -100,6 +116,15 @@ class SessionState:
     shape_before_pad: Tuple[int, int, int]
     positive_clicks: list[int] = field(default_factory=list)
     negative_clicks: list[int] = field(default_factory=list)
+
+
+@dataclass
+class RatingSession:
+    """State for a volume rating session. Persisted to disk as JSON."""
+    name: str
+    seed: int
+    current_index: int
+    total_volumes: int
 
 
 # Active sessions keyed by session_id
