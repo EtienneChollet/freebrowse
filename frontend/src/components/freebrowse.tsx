@@ -1987,15 +1987,7 @@ export default function FreeBrowse() {
         return;
       }
 
-      await loadNiftiIntoViewer(data.volume_nifti);
-
-      setRatingState((prev) => ({
-        ...prev,
-        currentPath: data.path,
-        currentIndex: data.current_index,
-        selectedRating: null,
-        loading: false,
-      }));
+      await loadRatingVolume(ratingState.sessionId);
     } catch (err) {
       setRatingState((prev) => ({
         ...prev,
