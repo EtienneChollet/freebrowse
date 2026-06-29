@@ -24,6 +24,8 @@ import numpy as np
 import torch
 import yaml
 from fastapi import HTTPException
+from scipy.ndimage import gaussian_filter
+from scipy.ndimage import label as label_components
 
 import utils
 
@@ -73,7 +75,65 @@ def pad_to_multiple(tensor: torch.Tensor, multiple: int = 16) -> torch.Tensor:
     return torch.nn.functional.pad(tensor, (0, pw, 0, ph, 0, pd))
 
 
+def smooth_click_components(
+    mask: torch.Tensor,
+    sigma: float | None,
+    truncate: float = 3.0,
+    normalize: str | None = None,
+) -> torch.Tensor:
+    """Smooth isolated click components while preserving scribble components.
+
+    Parameters
+    ----------
+    mask : torch.Tensor
+        Binary prompt mask with shape `(*spatial)`.
+    sigma : float or None
+        Gaussian smoothing sigma. `None` leaves the mask unchanged.
+    truncate : float
+        Number of standard deviations used to truncate the Gaussian kernel.
+    normalize : str or None
+        Kernel normalization from the training config. `None` restores peak scaling used by
+        `scipy.ndimage.gaussian_filter`; other values keep SciPy's default sum-preserving output.
+
+    Returns
+    -------
+    torch.Tensor
+        Prompt mask with single-voxel click components smoothed and larger components unchanged.
+    """
+    if sigma is None:
+        return mask
+
+    mask_np = mask.detach().cpu().numpy().astype(np.float32)
+    labeled, num_components = label_components(mask_np > 0)
+    if num_components == 0:
+        return mask
+
+    component_sizes = np.bincount(labeled.ravel())
+    click_mask = np.zeros_like(mask_np, dtype=np.float32)
+    scribble_mask = np.zeros_like(mask_np, dtype=np.float32)
+    for component_id in range(1, num_components + 1):
+        component_mask = labeled == component_id
+        if component_sizes[component_id] == 1:
+            click_mask[component_mask] = 1.0
+        else:
+            scribble_mask[component_mask] = 1.0
+
+    if not np.any(click_mask):
+        return torch.from_numpy(scribble_mask).to(dtype=mask.dtype)
+
+    blurred = gaussian_filter(click_mask, sigma=sigma, truncate=truncate)
+    if normalize is None:
+        radius = int(truncate * sigma + 0.5)
+        axis = np.arange(-radius, radius + 1)
+        kernel_1d = np.exp(-0.5 * (axis / sigma) ** 2)
+        blurred *= kernel_1d.sum() ** mask_np.ndim
+
+    smoothed = click_mask + blurred + scribble_mask
+    return torch.from_numpy(smoothed.astype(np.float32)).to(dtype=mask.dtype)
+
+
 def load_model_config(config_path: Path) -> dict[str, Any]:
+    """Load a model YAML config."""
     with open(config_path, "r") as f:
         return yaml.safe_load(f) or {}
 
@@ -100,10 +160,9 @@ def load_model(
     """Instantiate, load state_dict, move to device, eval()."""
     model = load_model_class(module_path=module_path)()
     checkpoint = torch.load(checkpoint_path, map_location=device, weights_only=False)
+    state_dict = checkpoint
     if isinstance(checkpoint, dict) and "model" in checkpoint:
         state_dict = checkpoint["model"]
-    else:
-        state_dict = checkpoint
     model.load_state_dict(state_dict)
     return model.to(device).eval()
 
@@ -476,13 +535,19 @@ def run_sp3d_inference(
     ras_dims = cache_entry.ras_dims
     shape_before_pad = cache_entry.shape_before_pad
 
-    pos_mask, neg_mask = annotation_mask_to_pos_neg(session_dir, manifest, ras_dims)
-    pos_mask = pad_to_multiple(pos_mask, multiple=32)
-    neg_mask = pad_to_multiple(neg_mask, multiple=32)
-
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     model, config = get_model(ml_id=ml_id, models_dir=models_dir, device=device)
     prompts_config = config.get("prompts", {}) if isinstance(config, dict) else {}
+
+    click_sigma = prompts_config.get("click_smoothing_sigma")
+    click_truncate = prompts_config.get("click_smoothing_truncate", 3.0)
+    click_normalize = prompts_config.get("normalize_smooth_kernel")
+
+    pos_mask, neg_mask = annotation_mask_to_pos_neg(session_dir, manifest, ras_dims)
+    pos_mask = smooth_click_components(pos_mask, click_sigma, click_truncate, click_normalize)
+    neg_mask = smooth_click_components(neg_mask, click_sigma, click_truncate, click_normalize)
+    pos_mask = pad_to_multiple(pos_mask, multiple=32)
+    neg_mask = pad_to_multiple(neg_mask, multiple=32)
 
     input_tensor = torch.zeros((1, 5, *volume_tensor.shape), dtype=torch.float32)
     input_tensor[0, 0] = volume_tensor
