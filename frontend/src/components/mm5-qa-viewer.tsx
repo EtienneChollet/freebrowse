@@ -34,10 +34,9 @@ export default function MM5QaViewer() {
     debouncedGLUpdate,
   } = useViewerOptions(nvRef);
   const { handleLocationChange } = useLocation(nvRef);
-  const { updateImageDetails } = useVolumes(
+  useVolumes(
     nvRef,
     debouncedGLUpdate,
-    handleLocationChange,
     noopSurface,
   );
   const {
@@ -46,7 +45,6 @@ export default function MM5QaViewer() {
     nvRef,
     applyViewerOptions,
     syncViewerOptionsFromNiivue,
-    updateImageDetails,
     () => {},
     handleLocationChange,
     () => {},

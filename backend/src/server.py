@@ -33,6 +33,7 @@ serverless_mode = os.getenv('SERVERLESS_MODE', 'false').lower() == 'true'
 ai_dir = os.getenv('AI_DIR')
 models_dir = os.getenv('MODELS_DIR')
 enable_ai = os.getenv('ENABLE_AI', 'false').lower() == 'true' and not serverless_mode
+enable_qa = os.getenv('ENABLE_QA', 'false').lower() == 'true' and not serverless_mode
 enable_ai_history = os.getenv('ENABLE_AI_HISTORY', 'false').lower() == 'true' and enable_ai
 ai_cache_ttl_seconds = int(os.getenv('AI_SESSION_CACHE_TTL_SECONDS', '1800'))
 
@@ -45,6 +46,7 @@ logger.info(f"SERVERLESS_MODE: {serverless_mode}")
 logger.info(f"AI_DIR: {ai_dir}")
 logger.info(f"MODELS_DIR: {models_dir}")
 logger.info(f"ENABLE_AI: {enable_ai}")
+logger.info(f"ENABLE_QA: {enable_qa}")
 logger.info(f"ENABLE_AI_HISTORY: {enable_ai_history}")
 logger.info(f"AI_SESSION_CACHE_TTL_SECONDS: {ai_cache_ttl_seconds}")
 
@@ -269,143 +271,11 @@ def voxelprompt(request: VoxelPromptRequest):
     return {"status": "ok"}
 
 
-@app.post("/rating/init")
-def rating_init(request: RatingInitRequest):
-    """Initialize or resume a rating session."""
-    if not master_json or not Path(master_json).exists():
-        raise HTTPException(
-            status_code=500,
-            detail="MASTER_JSON not configured or file not found",
-        )
+# Keep local QA extensions out of the upstream-shaped server import path.
+if enable_qa:
+    from qa import router as qa_router
 
-    session_id = make_rating_session_id(request.name, request.seed)
-    existing = load_rating_session(session_id)
-
-    if existing is not None:
-        logger.info(
-            f"Resuming rating session: {session_id} at index "
-            f"{existing.current_index}"
-        )
-
-        return {
-            "session_id": session_id,
-            "current_index": existing.current_index,
-            "total_volumes": existing.total_volumes,
-        }
-
-    paths = load_shuffled_paths(request.seed)
-    session = RatingSession(
-        name=request.name,
-        seed=request.seed,
-        current_index=0,
-        total_volumes=len(paths),
-    )
-
-    save_rating_session(session_id, session)
-    logger.info(
-        f"Created rating session: {session_id} with "
-        f"{len(paths)} volumes"
-    )
-
-    return {
-        "session_id": session_id,
-        "current_index": 0,
-        "total_volumes": len(paths),
-    }
-
-
-@app.get("/rating/volume")
-def rating_volume(session_id: str, index: int | None = None):
-    """
-    Return a volume as base64-encoded gzipped NIfTI.
-
-    Parameters
-    ----------
-    session_id : str
-        The rating session ID.
-    index : int | None
-        Volume index to fetch. Defaults to session's current_index.
-        Allows frontend to prefetch upcoming volumes without advancing
-        the session pointer.
-    """
-    session = load_rating_session(session_id)
-    if session is None:
-        raise HTTPException(status_code=404, detail="Session not found")
-
-    paths = load_shuffled_paths(session.seed)
-    vol_index = index if index is not None else session.current_index
-
-    if vol_index < 0 or vol_index >= len(paths):
-        raise HTTPException(
-            status_code=400,
-            detail="Volume index out of range"
-        )
-
-    nifti_path = paths[vol_index]
-    if not Path(nifti_path).exists():
-        raise HTTPException(
-            status_code=404,
-            detail=f"NIfTI file not found: {nifti_path}"
-        )
-
-    raw_bytes = Path(nifti_path).read_bytes()
-    return {
-        "volume_nifti": base64.b64encode(raw_bytes).decode("utf-8"),
-        "path": nifti_path,
-        "current_index": vol_index,
-        "total_volumes": session.total_volumes,
-    }
-
-
-@app.post("/rating/rate")
-def rating_rate(request: RatingSubmitRequest):
-    """Record a rating for the current volume. Every click is recorded."""
-    session = load_rating_session(request.session_id)
-    if session is None:
-        raise HTTPException(status_code=404, detail="Session not found")
-
-    if request.rating < 1 or request.rating > 5:
-        raise HTTPException(
-            status_code=400,
-            detail="Rating must be between 1 and 5"
-        )
-
-    paths = load_shuffled_paths(session.seed)
-    if session.current_index >= len(paths):
-        raise HTTPException(
-            status_code=400,
-            detail="No current volume to rate"
-        )
-
-    current_path = paths[session.current_index]
-    append_rating_to_csv(request.session_id, current_path, request.rating)
-    logger.info(
-        f"Rating recorded: session={request.session_id}, "
-        f"path={current_path}, rating={request.rating}"
-    )
-    return {"success": True}
-
-
-@app.post("/rating/next")
-def rating_next(request: RatingNextRequest):
-    """Advance to the next volume. Does not return volume data.
-
-    Volume data is fetched separately via GET /rating/volume. This keeps
-    mutation (advancing) separate from reading (fetching NIfTI data), so
-    the client has a single code path for loading volumes.
-    """
-    session = load_rating_session(request.session_id)
-    if session is None:
-        raise HTTPException(status_code=404, detail="Session not found")
-
-    session.current_index += 1
-    save_rating_session(request.session_id, session)
-
-    return {
-        "done": session.current_index >= session.total_volumes,
-        "current_index": session.current_index,
-        "total_volumes": session.total_volumes,
-    }
+    app.include_router(qa_router)
 
 
 # Only mount data directory if not in serverless mode

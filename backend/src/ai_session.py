@@ -55,6 +55,11 @@ class _SessionCacheEntry:
     ras_dims: tuple[int, int, int] | None = None
     shape_before_pad: tuple[int, int, int] | None = None
     previous_logits: Any = None
+    nninteractive_session: Any = None
+    nninteractive_ml_id: str | None = None
+    nninteractive_volume_path: str | None = None
+    nninteractive_affine_ras: Any = None
+    nninteractive_ras_dims: tuple[int, int, int] | None = None
 
 
 def _now_iso() -> str:
@@ -110,6 +115,8 @@ class SessionManager:
             entry = self._cache.get(session_id)
             if entry is not None:
                 entry.previous_logits = None
+                if entry.nninteractive_session is not None:
+                    entry.nninteractive_session.reset_interactions()
                 entry.last_touched = time.monotonic()
 
     # ----- manifest I/O -----
@@ -284,6 +291,18 @@ def _load_yaml(path: Path) -> dict[str, Any] | None:
         return None
 
 
+def _model_backend(config: dict[str, Any] | None) -> str:
+    if not isinstance(config, dict):
+        return "sp3d"
+    return str(config.get("backend", "sp3d")).lower()
+
+
+def _model_display_name(model_dir: Path, config: dict[str, Any] | None) -> str:
+    if isinstance(config, dict) and config.get("name"):
+        return str(config["name"])
+    return model_dir.name
+
+
 def _list_models(models_dir: Path) -> list[dict[str, Any]]:
     if not models_dir.exists():
         return []
@@ -293,20 +312,24 @@ def _list_models(models_dir: Path) -> list[dict[str, Any]]:
             continue
         model_file = model_dir / "model.py"
         weights_file = model_dir / "weights.pt"
-        if not (model_file.exists() and weights_file.exists()):
+        config_file = model_dir / "config.yml"
+        config = _load_yaml(config_file) if config_file.exists() else None
+        backend = _model_backend(config)
+
+        if backend == "sp3d" and not (model_file.exists() and weights_file.exists()):
             continue
+        if backend == "nninteractive" and not isinstance(config, dict):
+            continue
+
         info: dict[str, Any] = {
             "ml_id": model_dir.name,
-            "name": model_dir.name,
-            "model_module_path": str(model_file),
-            "checkpoint_path": str(weights_file),
-            "config_path": None,
-            "config": None,
+            "name": _model_display_name(model_dir, config),
+            "backend": backend,
+            "model_module_path": str(model_file) if model_file.exists() else None,
+            "checkpoint_path": str(weights_file) if weights_file.exists() else None,
+            "config_path": str(config_file) if config_file.exists() else None,
+            "config": config,
         }
-        config_file = model_dir / "config.yml"
-        if config_file.exists():
-            info["config_path"] = str(config_file)
-            info["config"] = _load_yaml(config_file)
         out.append(info)
     return out
 
@@ -388,7 +411,7 @@ def build_router(
     ):
         _require_enabled()
         session_dir, manifest = manager.find_by_id(session_id)
-        _require_ml_id(ml_id)
+        model_info = _require_ml_id(ml_id)
         if not manifest.get("volume_path"):
             raise HTTPException(status_code=400, detail="Session has no volume set")
         if not manifest.get("annotation_path"):
@@ -408,6 +431,7 @@ def build_router(
             manifest=manifest,
             data_dir=manager.data_dir,
             models_dir=models_dir,
+            model_info=model_info,
         )
 
         result_rel = "result.nii.gz"
