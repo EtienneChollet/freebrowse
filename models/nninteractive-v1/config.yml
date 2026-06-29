@@ -1,0 +1,4 @@
+backend: nninteractive
+name: nnInteractive v1.0
+model_path: /cluster/dalcalab2/users/epc28/projects/nnInteractive/nnInteractive_v1.0
+max_interaction_points: 512

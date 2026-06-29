@@ -33,6 +33,7 @@ interface AiAnnotationTabProps {
 type ModelInfo = {
   ml_id: string;
   name: string;
+  backend?: string;
   config_path: string | null;
 };
 
@@ -99,6 +100,12 @@ export default function AiAnnotationTab({
     for (const s of aiSessions) map[s.session_id] = s;
     return map;
   }, [aiSessions]);
+
+  const selectedModel = useMemo(
+    () => models.find((model) => model.ml_id === selectedMlId) ?? null,
+    [models, selectedMlId],
+  );
+  const isNnInteractiveModel = selectedModel?.backend === "nninteractive";
 
   const handleClickNewSession = async () => {
     setNewError(null);
@@ -290,6 +297,13 @@ export default function AiAnnotationTab({
           <Button variant="outline" className="w-full" onClick={handleLoadModels}>
             Reload Models
           </Button>
+          {isNnInteractiveModel && (
+            <p className="text-xs text-muted-foreground">
+              nnInteractive uses the annotation bitmap as sparse point clicks.
+              Use small positive/negative pen marks; avoid pen fill and magic
+              wand regions because they can create too many point interactions.
+            </p>
+          )}
         </div>
 
         <div className="space-y-2">
