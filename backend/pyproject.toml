@@ -18,3 +18,10 @@ dependencies = [
 dev = [
     "pytest",
 ]
+qa = [
+    "thunderpack>=0.0.2",
+]
+nninteractive = [
+    "nnunetv2==2.6.0",
+    "nnInteractive @ file:///cluster/dalcalab2/users/epc28/projects/nnInteractive",
+]

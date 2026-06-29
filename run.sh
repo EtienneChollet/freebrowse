@@ -7,4 +7,4 @@ cd "$(dirname "$0")"
 cd frontend && npm run build && cd ..
 
 # Run backend with env file
-cd backend && set -a && source .env && set +a && uv run fastapi dev src/server.py --host 0.0.0.0 --port 5990
+cd backend && set -a && source .env && set +a && uv run --python 3.13 --extra qa --extra nninteractive python -m uvicorn server:app --app-dir src --host 0.0.0.0 --port 5990
