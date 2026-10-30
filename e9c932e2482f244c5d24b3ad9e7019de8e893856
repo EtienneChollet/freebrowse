@@ -1,0 +1,25 @@
+# Ignore any files anywhere under the data directory that aren't nvd
+/data/**/*
+!/data/**/*.nvd
+
+# Ignore the node_modules directory
+/node_modules
+
+# Build outputs
+frontend/dist/
+frontend/dist-singlefile/
+frontend/dist-jupyter/
+
+# Vite temp files
+*.timestamp-*.mjs
+
+# Ignore __pychage__ directories
+__pycache__/
+
+# Ignore model weights
+/models/**/*.pt
+
+# Local development and inference runtime
+.runtime/
+backend/.venv/
+frontend/node_modules

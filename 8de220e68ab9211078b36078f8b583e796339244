@@ -1,0 +1,274 @@
+{
+ "cells": [
+  {
+   "cell_type": "markdown",
+   "id": "0b9428b7",
+   "metadata": {},
+   "source": [
+    "# Debug Inference Viewer\n",
+    "\n",
+    "Load a debug subfolder from `debug_output/` and overlay interaction\n",
+    "channels on the volume. Uses smart slice selection: ranks all\n",
+    "(axis, slice) pairs by in-plane scribble density so each scribble\n",
+    "is shown in its drawn plane."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "abb6a103",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "import json\n",
+    "from pathlib import Path\n",
+    "\n",
+    "import matplotlib.colors as mcolors\n",
+    "import matplotlib.pyplot as plt\n",
+    "import nibabel as nib\n",
+    "import numpy as np"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "53e2cbf9",
+   "metadata": {},
+   "source": [
+    "## Configuration\n",
+    "\n",
+    "Set `debug_dir` to the timestamped subfolder you want to inspect.\n",
+    "List available subfolders below."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "4637c98c",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "debug_root = Path('debug_output')\n",
+    "available = sorted(debug_root.iterdir()) if debug_root.exists() else []\n",
+    "for d in available:\n",
+    "    print(d.name)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "90c6cbfc",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# Pick the most recent subfolder (or set manually)\n",
+    "debug_dir = available[-1] if available else None\n",
+    "assert debug_dir is not None, \"No debug subfolders found in debug_output/\"\n",
+    "print(f\"Loading: {debug_dir}\")"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "a57750bc",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "with open(debug_dir / 'metadata.json') as f:\n",
+    "    metadata = json.load(f)\n",
+    "print(json.dumps(metadata, indent=2))"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "f7eba5dc",
+   "metadata": {},
+   "source": [
+    "## Load channels"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "8d8df0ff",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "channels = {}\n",
+    "for nii_path in sorted(debug_dir.glob('*.nii.gz')):\n",
+    "    name = nii_path.name.replace('.nii.gz', '')\n",
+    "    channels[name] = nib.load(str(nii_path)).get_fdata().astype(np.float32)\n",
+    "    print(f\"{name}: shape={channels[name].shape}, \"\n",
+    "          f\"range=[{channels[name].min():.4f}, {channels[name].max():.4f}]\")"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "1b33ac52",
+   "metadata": {},
+   "source": [
+    "## Smart slice selection\n",
+    "\n",
+    "Rank all (axis, slice) pairs by in-plane scribble density, filtering\n",
+    "out cross-axis views where scribbles appear as thin cross-sections."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "281cebcc",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "AXIS_NAMES = {0: 'Sagittal', 1: 'Coronal', 2: 'Axial'}\n",
+    "MIN_THICKNESS = 3\n",
+    "MAX_SLICES = 8\n",
+    "\n",
+    "volume = channels['0_volume']\n",
+    "positive = channels.get('2_positive', np.zeros_like(volume))\n",
+    "negative = channels.get('3_negative', np.zeros_like(volume))\n",
+    "combined = positive + negative\n",
+    "\n",
+    "candidates = []\n",
+    "for axis in range(3):\n",
+    "    for s in range(combined.shape[axis]):\n",
+    "        mask = np.take(combined, s, axis=axis)\n",
+    "        if not mask.any():\n",
+    "            continue\n",
+    "        density = mask.sum()\n",
+    "        binary = mask > 0\n",
+    "        rows = binary.any(axis=1).sum()\n",
+    "        cols = binary.any(axis=0).sum()\n",
+    "        if min(rows, cols) >= MIN_THICKNESS:\n",
+    "            candidates.append((axis, s, density))\n",
+    "\n",
+    "candidates.sort(key=lambda x: x[2], reverse=True)\n",
+    "selected = [(a, s) for a, s, _ in candidates[:MAX_SLICES]]\n",
+    "selected.sort(key=lambda x: (x[0], x[1]))\n",
+    "\n",
+    "# Fallback: if no in-plane scribbles, just take top density slices\n",
+    "if not selected:\n",
+    "    fallback = []\n",
+    "    for axis in range(3):\n",
+    "        for s in range(combined.shape[axis]):\n",
+    "            mask = np.take(combined, s, axis=axis)\n",
+    "            d = mask.sum()\n",
+    "            if d > 0:\n",
+    "                fallback.append((axis, s, d))\n",
+    "    fallback.sort(key=lambda x: x[2], reverse=True)\n",
+    "    selected = [(a, s) for a, s, _ in fallback[:MAX_SLICES]]\n",
+    "    selected.sort(key=lambda x: (x[0], x[1]))\n",
+    "    print(\"WARNING: no in-plane scribbles found, using fallback\")\n",
+    "\n",
+    "print(f\"Selected {len(selected)} slices:\")\n",
+    "for axis, s in selected:\n",
+    "    mask = np.take(combined, s, axis=axis)\n",
+    "    print(f\"  {AXIS_NAMES[axis]} #{s}: density={mask.sum():.0f}\")"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "af34a992",
+   "metadata": {},
+   "source": [
+    "## Overlay interactions on volume\n",
+    "\n",
+    "Green = positive interactions, Red = negative interactions.\n",
+    "Slices selected by in-plane scribble density across all axes."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "9757b0e3",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "pos_cmap = mcolors.LinearSegmentedColormap.from_list(\n",
+    "    'vibrant_green', [(0, 0, 0, 0), (0.0, 0.9, 0.0, 1.0)],\n",
+    ")\n",
+    "neg_cmap = mcolors.LinearSegmentedColormap.from_list(\n",
+    "    'vibrant_red', [(0, 0, 0, 0), (0.9, 0.0, 0.0, 1.0)],\n",
+    ")\n",
+    "\n",
+    "n_cols = len(selected)\n",
+    "fig, axes = plt.subplots(1, n_cols, figsize=(4 * n_cols, 4))\n",
+    "if n_cols == 1:\n",
+    "    axes = [axes]\n",
+    "\n",
+    "for ax_idx, (axis, sl) in enumerate(selected):\n",
+    "    ax = axes[ax_idx]\n",
+    "    vol_slice = np.take(volume, sl, axis=axis)\n",
+    "    pos_slice = np.take(positive, sl, axis=axis)\n",
+    "    neg_slice = np.take(negative, sl, axis=axis)\n",
+    "\n",
+    "    ax.imshow(vol_slice.T, cmap='gray', origin='lower')\n",
+    "\n",
+    "    if pos_slice.max() > 0:\n",
+    "        ax.imshow(\n",
+    "            np.ma.masked_where(pos_slice.T < 0.01, pos_slice.T),\n",
+    "            cmap=pos_cmap, alpha=0.9, origin='lower', vmin=0, vmax=1,\n",
+    "        )\n",
+    "\n",
+    "    if neg_slice.max() > 0:\n",
+    "        ax.imshow(\n",
+    "            np.ma.masked_where(neg_slice.T < 0.01, neg_slice.T),\n",
+    "            cmap=neg_cmap, alpha=0.9, origin='lower', vmin=0, vmax=1,\n",
+    "        )\n",
+    "\n",
+    "    n_pos = int(pos_slice.sum())\n",
+    "    n_neg = int(neg_slice.sum())\n",
+    "    ax.set_title(f'{AXIS_NAMES[axis]} #{sl}\\n+{n_pos} / -{n_neg}', fontsize=10)\n",
+    "    ax.axis('off')\n",
+    "\n",
+    "fig.suptitle(\n",
+    "    f\"Model: {metadata['model_name']}  |  {metadata['timestamp']}\\n\"\n",
+    "    f\"Green = positive, Red = negative  |  \"\n",
+    "    f\"{int(positive.sum())} pos, {int(negative.sum())} neg voxels total\",\n",
+    "    fontsize=13,\n",
+    ")\n",
+    "plt.tight_layout()\n",
+    "plt.savefig(debug_dir / 'overlay.png', dpi=150, bbox_inches='tight')\n",
+    "plt.show()"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "b7c6b24f",
+   "metadata": {},
+   "source": [
+    "## Previous prediction channel"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "eff25d8e",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "prev_pred = channels.get('1_previous_pred')\n",
+    "if prev_pred is not None and prev_pred.max() > 0:\n",
+    "    mid_z = prev_pred.shape[2] // 2\n",
+    "    fig, axes = plt.subplots(1, 3, figsize=(12, 4))\n",
+    "    for ax, offset in zip(axes, [-5, 0, 5]):\n",
+    "        sl = min(max(mid_z + offset, 0), prev_pred.shape[2] - 1)\n",
+    "        ax.imshow(prev_pred[:, :, sl].T, cmap='hot', origin='lower')\n",
+    "        ax.set_title(f'prev_pred z={sl}')\n",
+    "        ax.axis('off')\n",
+    "    plt.tight_layout()\n",
+    "    plt.show()\n",
+    "else:\n",
+    "    print(\"No previous prediction data (channel is all zeros).\")"
+   ]
+  }
+ ],
+ "metadata": {
+  "jupytext": {
+   "cell_metadata_filter": "-all",
+   "main_language": "python",
+   "notebook_metadata_filter": "-all"
+  }
+ },
+ "nbformat": 4,
+ "nbformat_minor": 5
+}
