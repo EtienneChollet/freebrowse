@@ -305,8 +305,10 @@ if enable_qa:
 
     app.include_router(qa_router)
 
+# Mount static directories AFTER all API routes.
+app.mount("/static", StaticFiles(directory=static_dir, html=True), name="static")
 
-# Only mount data directory if not in serverless mode
+# Only mount data directory if not in serverless mode.
 if not serverless_mode:
     if enable_ai:
         session_storage = Path(ai_dir or "./ai-sessions")
