@@ -160,7 +160,7 @@ def test_inference_route_passes_context_id_to_runner(tmp_path: Path, monkeypatch
     """
     Browser context IDs reach the iterative runner through the real session and dispatch routes.
     """
-    model_directory = tmp_path / "models" / "cool-blob"
+    model_directory = tmp_path / "models" / "segmento-v1"
     model_directory.mkdir(parents=True)
     (model_directory / "config.yml").write_text("backend: fiery_flame\n")
     image = nib.Nifti1Image(np.zeros((2, 2, 2), np.uint8), np.eye(4))
@@ -186,7 +186,7 @@ def test_inference_route_passes_context_id_to_runner(tmp_path: Path, monkeypatch
         return image
 
     monkeypatch.setattr(fiery_flame.runner, "predict", predict)
-    response = client.post(f"{url}/infer/cool-blob", json={
+    response = client.post(f"{url}/infer/segmento-v1", json={
         "annotation_mode": "multiclass", "prediction_context_id": "browser-edit-1",
     })
     assert response.status_code == 200, response.text

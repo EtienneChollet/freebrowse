@@ -1,5 +1,5 @@
 """
-Use cumulative annotation files for successive Segmento v1 predictions on one scan.
+Use cumulative annotation files for successive Segmento V1 predictions on one scan.
 """
 from pathlib import Path
 from types import SimpleNamespace
@@ -8,7 +8,7 @@ from typing import Any, Dict
 import nibabel as nib
 import yaml
 
-from cool_blob.inference import runner
+from segmento_v1.inference import runner
 
 
 class InteractiveSession:

@@ -24,7 +24,7 @@ function renderControls() {
 }
 
 describe("multiclass controls", () => {
-  it.each(["cool-blob", "open-whale", "grey-plant"])("highlights only the drawing choice in %s binary editing", (modelId) => {
+  it.each(["segmento-v1", "open-whale", "grey-plant"])("highlights only the drawing choice in %s binary editing", (modelId) => {
     useFreeBrowseStore.setState({ aiModelId: modelId, aiEditingMode: "per_label", aiActiveLabelId: 1 });
     renderControls();
     expect(screen.getByLabelText("One label at a time")).toBeChecked();

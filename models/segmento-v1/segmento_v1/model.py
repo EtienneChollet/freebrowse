@@ -1,5 +1,5 @@
 """
-Vendored Segmento v1 definitions; see PROVENANCE.md for sources and supported scope.
+Vendored Segmento V1 definitions; see PROVENANCE.md for sources and supported scope.
 
 Sampling and attention equations retain the original implementation and parameter names.
 """
@@ -12,8 +12,8 @@ import torch.nn.functional as F
 from torch import nn
 from torch.utils.checkpoint import checkpoint
 
-from cool_blob.backbone import Unet
-from cool_blob.sampling import pad_to_multiple, crop_from_pad, sample_prompts_in_class
+from segmento_v1.backbone import Unet
+from segmento_v1.sampling import pad_to_multiple, crop_from_pad, sample_prompts_in_class
 
 _UNSET = object()
 _INHERIT = object()
@@ -185,8 +185,8 @@ class _AmixCrossMixin(nn.Module):
         # `_embed` pads to it instead of to a multiple of 2**(num_downs+1).
         self.anatomix_input_shape = None
 
-        assert anatomix_backbone == "unet", "Only the Segmento v1 CNN is bundled"
-        assert anatomix_random_init, "Load the full Segmento v1 checkpoint"
+        assert anatomix_backbone == "unet", "Only the Segmento V1 CNN is bundled"
+        assert anatomix_random_init, "Load the full Segmento V1 checkpoint"
         assert not freeze_anatomix, "The bundled checkpoint includes the backbone"
         self.anatomix = Unet(
             dimension=3,

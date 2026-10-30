@@ -38,12 +38,12 @@ beforeEach(() => {
     session_id: "one", session_name: "one", created_at: "2026-10-21", state_version: 5,
     volume_path: "scan.nii.gz", volume_path_root: "data", annotation_path: "annotations.nii.gz",
     result_path: null, last_inference_at: null, last_inference_ml_id: null,
-    model_id: "cool-blob", annotation_mode: "multiclass", editing_mode: "joint", modality: "ct",
+    model_id: "segmento-v1", annotation_mode: "multiclass", editing_mode: "joint", modality: "ct",
     classes: [{ id: 3, name: "A", color: "#00ff00" }, { id: 8, name: "B", color: "#00ffff" }],
   };
   useFreeBrowseStore.setState({
     aiActiveSession: { session_id: "one", session_name: "one" },
-    aiModelId: "cool-blob", aiAnnotationMode: "multiclass", aiEditingMode: "joint",
+    aiModelId: "segmento-v1", aiAnnotationMode: "multiclass", aiEditingMode: "joint",
     aiBinaryState: null, aiActiveLabelId: null, aiLabelActions: null, aiLabelSaving: false,
     aiLabelDrawingReady: true,
     aiRevision: 0, aiAutoUpdate: false, aiBusy: false, aiError: null, aiClasses: server.classes,
@@ -87,7 +87,7 @@ beforeEach(() => {
 afterEach(() => { vi.useRealTimers(); vi.unstubAllGlobals(); });
 
 describe("opt-in binary editing", () => {
-  it.each(["cool-blob", "open-whale", "grey-plant"])("shares manual and automatic predictions for %s", async (modelId) => {
+  it.each(["segmento-v1", "open-whale", "grey-plant"])("shares manual and automatic predictions for %s", async (modelId) => {
     server.model_id = modelId;
     useFreeBrowseStore.setState({ aiModelId: modelId });
     const nv = viewer();

@@ -108,7 +108,7 @@ def main() -> None:
     """
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--url", default="http://127.0.0.1:8102")
-    parser.add_argument("--model", default="fiery-flame", choices=["fiery-flame", "cool-blob"])
+    parser.add_argument("--model", default="fiery-flame", choices=["fiery-flame", "segmento-v1"])
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--hardware-gpu", action="store_true")
     parser.add_argument("--exercise", action="store_true")

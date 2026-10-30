@@ -63,7 +63,7 @@ describe("new AI sessions", () => {
     return { nv, fetchMock, saved };
   }
 
-  it.each(["cool-blob", "open-whale", "grey-plant"])(
+  it.each(["segmento-v1", "open-whale", "grey-plant"])(
     "starts %s in per-label mode with foreground selected and the saved revision",
     async (modelId) => {
       useFreeBrowseStore.setState({ aiModelId: modelId, aiRevision: 12 });

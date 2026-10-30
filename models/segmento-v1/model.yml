@@ -1,5 +1,5 @@
 model:
-  _class: cool_blob.model.AmixCrossAttentionClickCachedFixedTotalMultiLabel
+  _class: segmento_v1.model.AmixCrossAttentionClickCachedFixedTotalMultiLabel
   anatomix_ckpt: ''
   anatomix_num_downs: 5
   anatomix_ngf: 32

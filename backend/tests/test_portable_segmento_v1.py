@@ -1,5 +1,5 @@
 """
-Verify portable COOL-BLOB loading, dispatch, and session-local correction handling.
+Verify portable Segmento V1 loading, dispatch, and session-local correction handling.
 """
 from pathlib import Path
 from types import SimpleNamespace
@@ -15,10 +15,10 @@ import yaml
 
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / "backend/src"))
-sys.path.insert(0, str(ROOT / "models/cool-blob"))
+sys.path.insert(0, str(ROOT / "models/segmento-v1"))
 
-from cool_blob import inference, model
-from cool_blob.session import InteractiveSession
+from segmento_v1 import inference, model
+from segmento_v1.session import InteractiveSession
 import ml_inference
 
 
@@ -37,12 +37,12 @@ class RejectOriginalRepositories(importlib.abc.MetaPathFinder):
 
 sys.meta_path.insert(0, RejectOriginalRepositories())
 sys.path.insert(0, sys.argv[1])
-import cool_blob.model
-import cool_blob.inference
-import cool_blob.session
+import segmento_v1.model
+import segmento_v1.inference
+import segmento_v1.session
 """
     result = subprocess.run(
-        [sys.executable, "-c", script, str(ROOT / "models/cool-blob")],
+        [sys.executable, "-c", script, str(ROOT / "models/segmento-v1")],
         capture_output=True, text=True, check=False,
     )
     assert result.returncode == 0, result.stderr
@@ -80,9 +80,9 @@ def test_checkpoint_load_is_complete_strict_and_normalizes_compilation_keys(
     monkeypatch.setattr(torch, "load", lambda *args, **kwargs: {"model": state})
     config = {
         "checkpoint_path": str(tmp_path / "weights.pt"),
-        "training_config_path": str(ROOT / "models/cool-blob/model.yml"),
+        "training_config_path": str(ROOT / "models/segmento-v1/model.yml"),
     }
-    inference.CoolBlobRunner().load_model(config, torch.device("cpu"))
+    inference.SegmentoV1Runner().load_model(config, torch.device("cpu"))
     assert received["strict"] is True
     assert set(received["state"]) == {"anatomix.model.weight", "attention.weight"}
     assert received["options"]["anatomix_compile"] is False
@@ -96,12 +96,12 @@ def test_freebrowse_dispatch_resolves_model_local_files(tmp_path: Path, monkeypa
     The portable entry resolves paths beside config.yml and forwards all editing options.
     """
     received: Dict[str, Any] = {}
-    directory = tmp_path / "models/cool-blob"
+    directory = tmp_path / "models/segmento-v1"
     session = tmp_path / "session"
     session.mkdir()
     volume = tmp_path / "scan.nii.gz"
     prediction = nib.Nifti1Image(np.zeros((2, 2, 2), np.uint8), np.eye(4))
-    config = yaml.safe_load((ROOT / "models/cool-blob/config.yml").read_text())
+    config = yaml.safe_load((ROOT / "models/segmento-v1/config.yml").read_text())
     original = dict(config)
 
     def predict(*args: Any, **options: Any) -> nib.Nifti1Image:
@@ -115,7 +115,7 @@ def test_freebrowse_dispatch_resolves_model_local_files(tmp_path: Path, monkeypa
     monkeypatch.setattr(inference.runner, "predict", predict)
     monkeypatch.setattr(ml_inference, "_resolve_volume_path", lambda *args: volume)
     result, _ = ml_inference.run_inference(
-        ml_id="cool-blob", label_value=1, session_id="portable",
+        ml_id="segmento-v1", label_value=1, session_id="portable",
         cache_entry=SimpleNamespace(), session_dir=session,
         manifest={"annotation_path": "marks.nii.gz", "classes": [{"id": 3}],
                   "prediction_context_id": "edit-2"},
@@ -186,7 +186,7 @@ def test_only_cumulative_marks_reuse_raw_previous_logits(changed_marks: Dict[int
     prepared = inference.PreparedImage(
         torch.zeros(1, 1, 2, 2, 2), np.eye(4), np.eye(4), (2, 2, 2),
     )
-    runner = inference.CoolBlobRunner()
+    runner = inference.SegmentoV1Runner()
     cache = SimpleNamespace()
     for marks in ({0: 1}, changed_marks):
         values = np.zeros((2, 2, 2), np.uint8)
@@ -199,3 +199,33 @@ def test_only_cumulative_marks_reuse_raw_previous_logits(changed_marks: Dict[int
         )
     assert priors[0] is None
     assert (priors[1] is not None) == (changed_marks == {0: 1, 1: 1})
+
+
+def test_existing_sessions_resolve_segmento_v1_without_rewriting_saved_edits(tmp_path: Path) -> None:
+    """
+    Reopen an older session under Segmento V1 while retaining its edits and original disk record.
+    """
+    import json
+    from ai_session import SessionManager
+
+    directory = tmp_path / "sessions" / "ExistingSession"
+    directory.mkdir(parents=True)
+    manifest = {
+        "session_id": "existing", "session_name": "ExistingSession",
+        "model_id": "cool-blob", "last_inference_ml_id": "cool-blob",
+        "annotation_path": "annotations.nii.gz", "result_path": "result.nii.gz",
+        "classes": [{"id": 2, "name": "Kidney", "locked": True}],
+        "iterations": [{"ml_id": "cool-blob", "result_path": "result_000.nii.gz"}],
+    }
+    path = directory / "session.json"
+    original = json.dumps(manifest)
+    path.write_text(original)
+    manager = SessionManager(tmp_path / "sessions", tmp_path, 60)
+    loaded = manager.list_sessions()[0]
+    assert loaded["model_id"] == "segmento-v1"
+    assert loaded["last_inference_ml_id"] == "segmento-v1"
+    assert loaded["iterations"][0]["ml_id"] == "segmento-v1"
+    assert loaded["classes"] == manifest["classes"]
+    assert loaded["annotation_path"] == manifest["annotation_path"]
+    assert loaded["result_path"] == manifest["result_path"]
+    assert path.read_text() == original

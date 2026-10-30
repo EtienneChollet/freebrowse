@@ -3,9 +3,9 @@ requires = ["setuptools==80.9.0"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "freebrowse-cool-blob"
+name = "freebrowse-segmento-v1"
 version = "0.1.0"
-description = "Segmento v1 interactive multilabel segmentation"
+description = "Segmento V1 interactive multilabel segmentation"
 license-files = ["licenses/*.txt", "PROVENANCE.md"]
 requires-python = ">=3.11,<3.14"
 dependencies = [
@@ -18,11 +18,10 @@ dependencies = [
 ]
 
 [project.scripts]
-segmento-v1-predict = "cool_blob.cli:main"
-cool-blob-predict = "cool_blob.cli:main"
+segmento-v1-predict = "segmento_v1.cli:main"
 
 [project.optional-dependencies]
 freebrowse = ["scipy==1.16.2", "uvicorn==0.35.0"]
 
 [tool.setuptools.packages.find]
-include = ["cool_blob*"]
+include = ["segmento_v1*"]

@@ -4,7 +4,7 @@ import type { NVImage } from "@niivue/niivue";
 export const BACKGROUND_LABEL = 255;
 
 export function supportsPerLabelEditing(modelId: string): boolean {
-  return ["cool-blob", "open-whale", "grey-plant"].includes(modelId);
+  return ["segmento-v1", "open-whale", "grey-plant"].includes(modelId);
 }
 
 const CLASS_COLORS = [

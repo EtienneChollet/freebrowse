@@ -31,7 +31,7 @@ _SESSION_NAME_RE = re.compile(r"^[A-Za-z0-9_-]+$")
 _MANIFEST_FILENAME = "session.json"
 _VOLUME_ROOT_DATA = "data"
 _VOLUME_ROOT_SESSION = "session"
-_PER_LABEL_MODELS = {"cool-blob", "open-whale", "grey-plant"}
+_PER_LABEL_MODELS = {"segmento-v1", "open-whale", "grey-plant"}
 
 
 class NewSessionRequest(BaseModel):
@@ -193,7 +193,13 @@ class SessionManager:
 
     def _read_manifest(self, manifest_path: Path) -> dict[str, Any]:
         with open(manifest_path, "r") as f:
-            return json.load(f)
+            manifest = json.load(f)
+        # Resolve saved sessions created before the Segmento V1 rename.
+        for record in [manifest, *(manifest.get("iterations") or [])]:
+            for field in ("model_id", "last_inference_ml_id", "ml_id"):
+                if record.get(field) == "cool-blob":
+                    record[field] = "segmento-v1"
+        return manifest
 
     def _write_manifest(self, manifest_path: Path, manifest: dict[str, Any]) -> None:
         """

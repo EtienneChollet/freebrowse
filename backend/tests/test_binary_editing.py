@@ -83,7 +83,7 @@ class EditingSession:
         Submit complete settings with the latest known revision.
         """
         settings = {
-            "model_id": "cool-blob", "annotation_mode": "multiclass", "classes": CLASSES,
+            "model_id": "segmento-v1", "annotation_mode": "multiclass", "classes": CLASSES,
             "editing_mode": "per_label", "active_label_id": 3, "modality": "ct",
         }
         settings.update({key: self.state[key] for key in settings if key in self.state})
@@ -127,7 +127,7 @@ class EditingSession:
         return np.asarray(nib.load(self.directory / self.state["result_path"]).dataobj)
 
 
-@pytest.fixture(params=["cool-blob", "open-whale", "grey-plant"])
+@pytest.fixture(params=["segmento-v1", "open-whale", "grey-plant"])
 def editing(tmp_path: Path, monkeypatch: Any, request: Any) -> Any:
     """
     Exercise production routing, prompt remapping, priors, composition, and persistence together.

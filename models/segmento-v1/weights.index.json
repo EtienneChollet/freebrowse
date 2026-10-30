@@ -1,5 +1,5 @@
 {
-  "format": "cool-blob-torch-parts-v1",
+  "format": "segmento-v1-torch-parts-v1",
   "source_checkpoint_sha256": "782a3440f15b0539be583ec70ce3e852bdfe4b73c04892fbf140780fcef60515",
   "payload_sha256": "c64ab8e536a1cd1ac7f2769578deec550acca5ed8c6dcebb67e7238552339201",
   "state_key_count": 71,

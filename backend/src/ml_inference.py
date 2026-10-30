@@ -603,8 +603,8 @@ def run_inference(
     backend = _model_backend(model_info)
     if backend == "fiery_flame":
         config = dict(_model_config(model_info))
-        if config.get("portable_package") == "cool_blob":
-            from cool_blob import inference as fiery_flame
+        if config.get("portable_package") == "segmento_v1":
+            from segmento_v1 import inference as fiery_flame
 
             directory = Path(model_info["config_path"]).resolve().parent
             for name in ("training_config_path", "checkpoint_path"):

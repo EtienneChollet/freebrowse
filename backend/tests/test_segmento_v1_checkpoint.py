@@ -1,5 +1,5 @@
 """
-Verify complete tensor reconstruction and rejection of invalid COOL-BLOB checkpoint parts.
+Verify complete tensor reconstruction and rejection of invalid Segmento V1 checkpoint parts.
 """
 import hashlib
 import io
@@ -11,9 +11,9 @@ from typing import Any, Dict
 import pytest
 import torch
 
-sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "models/cool-blob"))
+sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "models/segmento-v1"))
 
-from cool_blob.checkpoint import load_checkpoint
+from segmento_v1.checkpoint import load_checkpoint
 
 
 def _write_parts(directory: Path, state: Dict[str, Any]) -> Path:
@@ -34,7 +34,7 @@ def _write_parts(directory: Path, state: Dict[str, Any]) -> Path:
         })
     manifest = directory / "weights.index.json"
     manifest.write_text(json.dumps({
-        "format": "cool-blob-torch-parts-v1", "source_checkpoint_sha256": "a" * 64,
+        "format": "segmento-v1-torch-parts-v1", "source_checkpoint_sha256": "a" * 64,
         "payload_sha256": hashlib.sha256(payload).hexdigest(),
         "state_key_count": len(state), "shards": entries,
     }))

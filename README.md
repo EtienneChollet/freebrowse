@@ -13,9 +13,9 @@ This is a re-write of the initial FreeBrowse implementation, based off of the
 Are you looking for the original FreeBrowse codebase?  That now lives on the
 branch [`v1`](https://github.com/freesurfer/freebrowse/tree/v1).
 
-## Segmento v1
+## Segmento V1
 
-Segmento v1 is the interactive multi-label segmentation model previously called COOL-BLOB (epoch 500). Its model code and weights are tracked in [models/cool-blob](models/cool-blob), and FreeBrowse displays it as **Segmento v1**. The model ID remains `cool-blob` for existing sessions; the prediction command is `segmento-v1-predict`.
+Segmento V1 is an interactive multi-label segmentation model. Its code and weights are tracked in [models/segmento-v1](models/segmento-v1). FreeBrowse uses the model identifier `segmento-v1`; the Python package is `segmento_v1` and the prediction command is `segmento-v1-predict`.
 
 ## Examples:
 

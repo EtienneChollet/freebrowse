@@ -1,5 +1,5 @@
 """
-Load complete Segmento v1 tensors from a legacy checkpoint or verified local binary parts.
+Load complete Segmento V1 tensors from a legacy checkpoint or verified local binary parts.
 """
 import hashlib
 import io
@@ -47,7 +47,7 @@ def load_checkpoint(checkpoint_path: Path) -> Dict[str, torch.Tensor]:
     Parameters
     ----------
     checkpoint_path : pathlib.Path
-        Legacy full .pt checkpoint or a cool-blob-torch-parts-v1 JSON manifest. Parts must
+        Legacy full .pt checkpoint or a segmento-v1-torch-parts-v1 JSON manifest. Parts must
         resolve inside the manifest directory and pass their recorded sizes and SHA-256 hashes.
 
     Returns
@@ -66,8 +66,8 @@ def load_checkpoint(checkpoint_path: Path) -> Dict[str, torch.Tensor]:
         return torch.load(checkpoint_path, map_location="cpu", weights_only=False)["model"]
     with checkpoint_path.open() as stream:
         manifest = json.load(stream)
-    if not isinstance(manifest, dict) or manifest.get("format") != "cool-blob-torch-parts-v1":
-        raise ValueError("Unsupported Segmento v1 checkpoint manifest format")
+    if not isinstance(manifest, dict) or manifest.get("format") != "segmento-v1-torch-parts-v1":
+        raise ValueError("Unsupported Segmento V1 checkpoint manifest format")
     for name in ("source_checkpoint_sha256", "payload_sha256"):
         digest = manifest.get(name)
         if not isinstance(digest, str) or not re.fullmatch(r"[0-9a-fA-F]{64}", digest):

@@ -18,7 +18,7 @@ import torch.nn.functional as functional
 import yaml
 from fastapi import HTTPException
 
-from cool_blob.checkpoint import load_checkpoint
+from segmento_v1.checkpoint import load_checkpoint
 
 logger = logging.getLogger(__name__)
 
@@ -163,7 +163,7 @@ def restore_prediction(
     return nib.Nifti1Image(result, prepared.native_affine)
 
 
-class CoolBlobRunner:
+class SegmentoV1Runner:
     """
     Serialize access to one checkpoint and its active image-feature cache.
     """
@@ -181,7 +181,7 @@ class CoolBlobRunner:
         """
         Strictly load the complete trained model, including the fine-tuned Anatomix backbone.
         """
-        from cool_blob.model import AmixCrossAttentionClickCachedFixedTotalMultiLabel
+        from segmento_v1.model import AmixCrossAttentionClickCachedFixedTotalMultiLabel
 
         checkpoint = Path(config["checkpoint_path"])
         if self.model is not None and self.checkpoint == checkpoint:
@@ -299,4 +299,4 @@ class CoolBlobRunner:
         return prediction
 
 
-runner = CoolBlobRunner()
+runner = SegmentoV1Runner()

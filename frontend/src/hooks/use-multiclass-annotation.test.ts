@@ -60,7 +60,7 @@ describe("automatic multiclass prediction", () => {
   });
 
   it("removes deleted marks and resets prediction context in manual mode", async () => {
-    useFreeBrowseStore.setState({ aiAutoUpdate: false, aiModelId: "cool-blob", aiClasses: [
+    useFreeBrowseStore.setState({ aiAutoUpdate: false, aiModelId: "segmento-v1", aiClasses: [
       { id: 1, name: "Liver", color: "#b6ff00" },
       { id: 2, name: "Kidney", color: "#00cfff" },
     ] });
@@ -149,7 +149,7 @@ describe("automatic multiclass prediction", () => {
   });
 
   it("keeps surviving predictions after deletion with auto-update enabled", async () => {
-    useFreeBrowseStore.setState({ aiModelId: "cool-blob", aiClasses: [
+    useFreeBrowseStore.setState({ aiModelId: "segmento-v1", aiClasses: [
       { id: 1, name: "Liver", color: "#b6ff00" },
       { id: 2, name: "Kidney", color: "#00cfff" },
     ] });
@@ -179,7 +179,7 @@ describe("automatic multiclass prediction", () => {
   });
 
   it("keeps prediction context across marks and resets it on Clear even in manual mode", async () => {
-    useFreeBrowseStore.setState({ aiAutoUpdate: false, aiModelId: "cool-blob" });
+    useFreeBrowseStore.setState({ aiAutoUpdate: false, aiModelId: "segmento-v1" });
     vi.mocked(NVImage.loadFromUrl).mockResolvedValue({ setColormapLabel: vi.fn() } as unknown as NVImage);
     const nv = viewer();
     const ref = { current: nv as unknown as Niivue };
@@ -201,7 +201,7 @@ describe("automatic multiclass prediction", () => {
   });
 
   it("starts fresh context after switching away from and back to Cool Blob", async () => {
-    useFreeBrowseStore.setState({ aiAutoUpdate: false, aiModelId: "cool-blob" });
+    useFreeBrowseStore.setState({ aiAutoUpdate: false, aiModelId: "segmento-v1" });
     vi.mocked(NVImage.loadFromUrl).mockResolvedValue({ setColormapLabel: vi.fn() } as unknown as NVImage);
     const nv = viewer();
     const ref = { current: nv as unknown as Niivue };
@@ -209,7 +209,7 @@ describe("automatic multiclass prediction", () => {
     nv.drawBitmap[0] = 1;
     await act(async () => { await result.current.requestPrediction(); });
     act(() => { useFreeBrowseStore.getState().setAiModel("fiery-flame", "multiclass"); });
-    act(() => { useFreeBrowseStore.getState().setAiModel("cool-blob", "multiclass"); });
+    act(() => { useFreeBrowseStore.getState().setAiModel("segmento-v1", "multiclass"); });
     await act(async () => { await result.current.requestPrediction(); });
     const requests = vi.mocked(postAiJson).mock.calls.filter(([url]) => url.includes("/infer/"));
     const contexts = requests.map(([, body]) =>

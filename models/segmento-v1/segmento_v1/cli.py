@@ -1,12 +1,12 @@
 """
-Run Segmento v1 on one scan and successive cumulative annotation NIfTI files.
+Run Segmento V1 on one scan and successive cumulative annotation NIfTI files.
 """
 import argparse
 from pathlib import Path
 
 import nibabel as nib
 
-from cool_blob.session import InteractiveSession
+from segmento_v1.session import InteractiveSession
 
 
 def main() -> None:

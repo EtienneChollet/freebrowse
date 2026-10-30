@@ -1,5 +1,5 @@
-name: Segmento v1
+name: Segmento V1
 backend: fiery_flame
-portable_package: cool_blob
+portable_package: segmento_v1
 training_config_path: model.yml
 checkpoint_path: weights.index.json
