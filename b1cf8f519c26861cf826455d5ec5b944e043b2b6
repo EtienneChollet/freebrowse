@@ -1,0 +1,19 @@
+{
+  "model_name": "sp3d-scribbles-halfres",
+  "volume_name": "MouseOrgans-contrast_ct_M06.nii",
+  "timestamp": "20260413_144600_849002",
+  "input_shape": [
+    1,
+    5,
+    160,
+    128,
+    256
+  ],
+  "channel_names": [
+    "volume",
+    "previous_pred",
+    "positive",
+    "negative",
+    "unused"
+  ]
+}

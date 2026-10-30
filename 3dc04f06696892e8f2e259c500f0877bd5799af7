@@ -1,0 +1,19 @@
+{
+  "model_name": "neel_synth-real",
+  "volume_name": "LiTS_4.nii",
+  "timestamp": "20260511_094437_792881",
+  "input_shape": [
+    1,
+    5,
+    256,
+    256,
+    448
+  ],
+  "channel_names": [
+    "volume",
+    "previous_pred",
+    "positive",
+    "negative",
+    "unused"
+  ]
+}
