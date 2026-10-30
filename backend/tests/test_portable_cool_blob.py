@@ -123,7 +123,7 @@ def test_freebrowse_dispatch_resolves_model_local_files(tmp_path: Path, monkeypa
         model_info={"config": config, "config_path": str(directory / "config.yml")},
     )
     assert result is prediction
-    assert received["config"]["checkpoint_path"] == str(directory / "weights.pt")
+    assert received["config"]["checkpoint_path"] == str(directory / "weights.index.json")
     assert received["config"]["training_config_path"] == str(directory / "model.yml")
     assert received["options"] == {"allowed_label_ids": [3], "context_id": "edit-2"}
     assert config == original

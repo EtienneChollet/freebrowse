@@ -2,4 +2,4 @@ name: COOL-BLOB (epoch 500)
 backend: fiery_flame
 portable_package: cool_blob
 training_config_path: model.yml
-checkpoint_path: weights.pt
+checkpoint_path: weights.index.json

@@ -1,0 +1,53 @@
+{
+  "format": "cool-blob-torch-parts-v1",
+  "source_checkpoint_sha256": "782a3440f15b0539be583ec70ce3e852bdfe4b73c04892fbf140780fcef60515",
+  "payload_sha256": "c64ab8e536a1cd1ac7f2769578deec550acca5ed8c6dcebb67e7238552339201",
+  "state_key_count": 71,
+  "shards": [
+    {
+      "file": "weights-00001-of-00009.bin",
+      "sha256": "b85a62a76970369ffdb1eb2be25e126a92f88afddb5901657490ca5b8fb092f2",
+      "bytes": 45000000
+    },
+    {
+      "file": "weights-00002-of-00009.bin",
+      "sha256": "8cf2ddf4d63cf68af8704829d71d1f7f7a448708e699f9a081eca16cdabf2459",
+      "bytes": 45000000
+    },
+    {
+      "file": "weights-00003-of-00009.bin",
+      "sha256": "53a40241718922113e97a78483e830e5a03219c3b8a938a814c743f7dd703f8e",
+      "bytes": 45000000
+    },
+    {
+      "file": "weights-00004-of-00009.bin",
+      "sha256": "4e9a8272063ea4a7004d6bca5ff5d2fa212bcaa0581f859e52ae3fe987a6a459",
+      "bytes": 45000000
+    },
+    {
+      "file": "weights-00005-of-00009.bin",
+      "sha256": "af006c40f8117802532a2bd89b340faa220eaa5f92c2d6592ec29454782b844d",
+      "bytes": 45000000
+    },
+    {
+      "file": "weights-00006-of-00009.bin",
+      "sha256": "f24af81dc72cba0f078397801143f90658ab23446ac6c49d0578d44b81c1b6ce",
+      "bytes": 45000000
+    },
+    {
+      "file": "weights-00007-of-00009.bin",
+      "sha256": "012fc4c7df3f208b065731cb0d0c1640baa5056d27bc5e0677128e7df0db289e",
+      "bytes": 45000000
+    },
+    {
+      "file": "weights-00008-of-00009.bin",
+      "sha256": "3d92f8f1ea76b4c5b58fde8c96dd7dd523223d1b55edcf4f068361fc8baaa371",
+      "bytes": 45000000
+    },
+    {
+      "file": "weights-00009-of-00009.bin",
+      "sha256": "5836c1ddf6e370d34f5e9f6cd258e0acc8c670592556112b9c40e0efd1b00159",
+      "bytes": 18317006
+    }
+  ]
+}

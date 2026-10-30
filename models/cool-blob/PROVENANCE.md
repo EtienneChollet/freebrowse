@@ -5,8 +5,10 @@ The bundled architecture is the dependency closure of `AmixCrossAttentionClickCa
 ## Model and checkpoint
 
 - Training run: `2026-09-27_amix-cross-iterative/20260929_213420-d4baca74734d99ee9f88775e57b2507a-COOL-BLOB`.
-- Checkpoint: complete `epoch-500.pt`, including the fine-tuned Anatomix backbone.
-- Checkpoint SHA-256: `782a3440f15b0539be583ec70ce3e852bdfe4b73c04892fbf140780fcef60515`.
+- Source checkpoint: complete `epoch-500.pt`, including the fine-tuned Anatomix backbone.
+- Source checkpoint SHA-256: `782a3440f15b0539be583ec70ce3e852bdfe4b73c04892fbf140780fcef60515`.
+- The tracked inference distribution serializes every tensor and original key from the source checkpoint's `model` dictionary into one payload, split into ordinary `weights-*.bin` files smaller than 45 MB. Splitting bytes also supports tensors larger than an individual file. Optimizer and other training state are omitted; model tensors are unchanged.
+- `weights.index.json` uses format `cool-blob-torch-parts-v1` and records the source checkpoint checksum, complete payload checksum, model state-key count, and each part's basename, size, and SHA-256. The loader verifies local paths, sizes, part and payload hashes, duplicate filenames, and the final key count before strict model loading. The verified payload loads once with `weights_only=True`; legacy full checkpoints remain supported.
 - `model.yml` contains the original run's model options. `_class` names the bundled class; the obsolete external `anatomix_ckpt` path is empty because the complete checkpoint supplies those weights.
 - The runner disables backbone compilation and initializes the architecture without reading separate Anatomix weights, matching the deployed FreeBrowse runner. It then loads every state-dict key strictly, normalizing `anatomix._orig_mod.*` to `anatomix.*`.
 
@@ -20,7 +22,7 @@ The bundled architecture is the dependency closure of `AmixCrossAttentionClickCa
 | `cool_blob/sampling.py` | Anatomix, `anatomix/prompt_segmentation/inference_utils.py` | same | `917cf0040f14c356571db6246f5ecb661b15befd2fc0bf0072563386e54f8595` |
 | `cool_blob/inference.py` | FreeBrowse, `backend/src/fiery_flame.py` | integration commit `5928ac4` | `99f19b9aa04f08dca9302624e12a506c9f884da3fd5eebdff9a0686dc5be7a65` |
 
-The model and Anatomix source files were clean at extraction. Complete selected class/function definitions are preserved. The constructor rejects unused ViT and separate pretrained/frozen-backbone loading paths rather than importing external repositories. The unsupported frozen-embedding branch is omitted. The portable runner changes only the model import and runner class name; preprocessing, prompt mapping, logits, context compatibility, and native-grid restoration are retained.
+The model and Anatomix source files were clean at extraction. Complete selected class/function definitions are preserved. The constructor rejects unused ViT and separate pretrained/frozen-backbone loading paths rather than importing external repositories. The unsupported frozen-embedding branch is omitted. The portable runner changes the model import, runner class name, and checkpoint-file loading; preprocessing, prompt mapping, logits, context compatibility, and native-grid restoration are retained.
 
 ## Attribution and distribution
 

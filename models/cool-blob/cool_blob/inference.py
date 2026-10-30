@@ -18,6 +18,8 @@ import torch.nn.functional as functional
 import yaml
 from fastapi import HTTPException
 
+from cool_blob.checkpoint import load_checkpoint
+
 logger = logging.getLogger(__name__)
 
 
@@ -192,7 +194,7 @@ class CoolBlobRunner:
         options.pop("compile", None)
         options.update(anatomix_compile=False, anatomix_random_init=True)
         model = AmixCrossAttentionClickCachedFixedTotalMultiLabel(**options)
-        state = torch.load(checkpoint, map_location="cpu", weights_only=False)["model"]
+        state = load_checkpoint(checkpoint)
         cleaned = {}
         for key, value in state.items():
             if key.startswith("anatomix._orig_mod."):
