@@ -602,7 +602,15 @@ def run_inference(
     """
     backend = _model_backend(model_info)
     if backend == "fiery_flame":
-        import fiery_flame
+        config = dict(_model_config(model_info))
+        if config.get("portable_package") == "cool_blob":
+            from cool_blob import inference as fiery_flame
+
+            directory = Path(model_info["config_path"]).resolve().parent
+            for name in ("training_config_path", "checkpoint_path"):
+                config[name] = str((directory / config[name]).resolve())
+        else:
+            import fiery_flame
 
         volume_path = _resolve_volume_path(manifest, session_dir, data_dir)
         annotation_path = (session_dir / manifest["annotation_path"]).resolve()
@@ -614,7 +622,7 @@ def run_inference(
         elif "classes" in manifest:
             binary_options["allowed_label_ids"] = [entry["id"] for entry in manifest["classes"]]
         prediction = fiery_flame.runner.predict(
-            volume_path, annotation_path, cache_entry, _model_config(model_info),
+            volume_path, annotation_path, cache_entry, config,
             manifest.get("modality", "ct"),
             context_id=manifest.get("prediction_context_id"),
             **binary_options,

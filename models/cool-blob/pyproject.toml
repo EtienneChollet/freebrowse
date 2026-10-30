@@ -1,0 +1,27 @@
+[build-system]
+requires = ["setuptools==80.9.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "freebrowse-cool-blob"
+version = "0.1.0"
+description = "Portable COOL-BLOB epoch-500 interactive multilabel segmentation"
+license-files = ["licenses/*.txt", "PROVENANCE.md"]
+requires-python = ">=3.11,<3.14"
+dependencies = [
+    "torch==2.8.0",
+    "numpy==2.4.2",
+    "nibabel==5.3.2",
+    "PyYAML==6.0.2",
+    "fastapi==0.115.14",
+    "voxel @ git+https://github.com/dalcalab/voxel.git@24cb8b10d698dd1dbce14426080c954a50b27858",
+]
+
+[project.scripts]
+cool-blob-predict = "cool_blob.cli:main"
+
+[project.optional-dependencies]
+freebrowse = ["scipy==1.16.2", "uvicorn==0.35.0"]
+
+[tool.setuptools.packages.find]
+include = ["cool_blob*"]

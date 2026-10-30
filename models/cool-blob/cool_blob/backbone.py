@@ -1,0 +1,431 @@
+"""
+Anatomix U-Net, originally adapted from CUT; see licenses and PROVENANCE.md.
+"""
+# Taken and lightly modified from CUT:
+# https://github.com/taesungp/contrastive-unpaired-translation
+from functools import partial
+
+import torch
+from torch import nn
+
+def get_norm_layer(ndims, norm='batch', eps=1e-5):
+    """
+    Get the normalization layer based on the number of dimensions and type of
+    normalization.
+
+    Parameters
+    ----------
+    ndims : int
+        The number of dimensions for the normalization layer (1--3).
+    norm : str, optional
+        The type of normalization to use.
+        Options are 'batch', 'instance', 'instance_affine', or 'none'.
+        'instance_affine' is just instance norm with learned affine rescaling.
+        Default is 'batch'.
+    eps : float, optional
+        Numerical-stability epsilon baked into the norm layer. For instance
+        norm this floors the backward gain at ``1/sqrt(eps)``; raising it (e.g.
+        1e-2) caps the near-singular amplification on near-constant inputs.
+        Default 1e-5 (the PyTorch default).
+
+    Returns
+    -------
+    Norm : callable or None
+        A callable ``Norm(num_features)`` building the PyTorch normalization
+        layer (with ``eps`` bound), or None if 'none'.
+    """
+
+    if norm == 'batch':
+        return partial(getattr(nn, f'BatchNorm{ndims}d'), eps=eps)
+
+    elif norm == 'instance':
+        return partial(getattr(nn, f'InstanceNorm{ndims}d'), eps=eps)
+
+    elif norm == 'instance_affine':
+        Norm = getattr(nn, f'InstanceNorm{ndims}d')
+        return partial(Norm, affine=True, eps=eps)
+
+    elif norm == 'none':
+        return None
+
+    else:
+        raise ValueError(f"Currently unsupported normalization: {norm}")
+
+
+
+def get_actvn_layer(activation='relu'):
+    """
+    Get the activation function layer based on the provided activation type.
+
+    Parameters
+    ----------
+    activation : str, optional
+        The type of activation function to use.
+        Options are 'relu', 'lrelu', 'elu',  'prelu', 'selu', 'tanh', or 'none'
+        Default is 'relu'.
+
+    Returns
+    -------
+    Activation : torch.nn.Module or None
+        The corresponding PyTorch activation layer, or None if 'none'.
+    """
+
+    if activation == 'relu':
+        Activation = nn.ReLU(inplace=True)
+    elif activation == 'lrelu':
+        Activation = nn.LeakyReLU(0.3, inplace=True)
+    elif activation == 'elu':
+        Activation = nn.ELU()
+    elif activation == 'prelu':
+        Activation = nn.PReLU()
+    elif activation == 'selu':
+        Activation = nn.SELU(inplace=True)
+    elif activation == 'tanh':
+        Activation = nn.Tanh()
+    elif activation == 'none':
+        Activation = None
+    else:
+        assert 0, "Unsupported activation: {}".format(activation)
+    return Activation
+
+
+
+class Unet(nn.Module):
+    """
+    U-Net architecture for image-to-image translation.
+
+    This class constructs a U-Net with configurable depth, filter sizes,
+    normalization, and activation layers.
+
+    Parameters
+    ----------
+    dimension : int
+        The number of dimensions (1, 2, or 3) for the input and convolution
+        operations.
+    input_nc : int
+        Number of channels in the input image.
+    output_nc : int
+        Number of channels in the output image.
+    num_downs : int
+        Number of downsampling operations in the U-Net architecture.
+        For example, if `num_downs == 7`, an input image of size 128x128
+        becomes 1x1 at the bottleneck.
+    ngf : int, optional
+        Number of filters in the last convolutional layer, by default 24.
+    norm : str, optional
+        Type of normalization to use ('batch', 'instance', or 'none'),
+        by default 'batch'.
+    final_act : str, optional
+        Activation function to apply at the output layer, by default 'none'.
+    activation : str, optional
+        Activation function to use in hidden layers ('relu', 'lrelu',
+        'elu', etc.), by default 'relu'.
+    pad_type : str, optional
+        Padding type to use in convolution layers ('reflect', 'zero', etc.),
+        by default 'reflect'.
+    doubleconv : bool, optional
+        Whether to apply double convolution in each block, default True.
+    residual_connection : bool, optional
+        Whether to add residual connections within the network, default False.
+    pooling : str, optional
+        Pooling type to use ('Max' or 'Avg'), by default 'Max'.
+    interp : str, optional
+        Upsampling method for the decoder ('nearest' or 'trilinear'),
+        by default 'nearest'.
+    use_skip_connection : bool, optional
+        Whether to use skip connections between corresponding encoder and
+        decoder layers, by default True.
+    norm_eps : float, optional
+        Epsilon for the normalization layers (see ``get_norm_layer``). With
+        instance norm, larger values (e.g. 1e-2) cap the backward gain
+        ``1/sqrt(var+eps)`` on near-constant inputs. By default 1e-5.
+
+    """
+
+    def __init__(
+        self,
+        dimension,
+        input_nc,
+        output_nc,
+        num_downs,
+        ngf=24,
+        norm="batch",
+        final_act="none",
+        activation="relu",
+        pad_type="reflect",
+        doubleconv=True,
+        residual_connection=False,
+        pooling="Max",
+        interp="nearest",
+        use_skip_connection=True,
+        norm_eps=1e-5,
+    ):
+        """
+        Initialize the U-Net model by constructing the architecture from the
+        innermost to the outermost layers.
+
+        Parameters are described in the class docstring.
+        """
+        super(Unet, self).__init__()
+        # Check dims
+        ndims = dimension
+        assert ndims in [1, 2, 3], 'ndims should be 1--3. found: %d' % ndims
+
+        # Decide whether to use bias based on normalization type
+        use_bias = norm == 'instance'
+        self.use_bias = use_bias
+
+        # Get the appropriate convolution and pooling layers for the given dim
+        Conv = getattr(nn, 'Conv%dd' % ndims)
+        Pool = getattr(nn, '%sPool%dd' % (pooling,ndims))
+
+        # Initialize normalization, activation, and final activation layers
+        Norm = get_norm_layer(ndims, norm, eps=norm_eps)
+        Activation = get_actvn_layer(activation)
+        FinalActivation = get_actvn_layer(final_act)
+
+        self.residual_connection = residual_connection
+        self.res_dest = []  # List to track destination layers for residuals
+        self.res_source  = []  # List to track source layers for residuals
+
+        # Start creating the model
+        model = [
+            Conv(
+                input_nc,
+                ngf,
+                3,
+                stride=1,
+                bias=use_bias,
+                padding='same',
+                padding_mode=pad_type,
+            )
+        ]
+        self.res_source += [len(model)-1]
+        if Norm is not None:
+            model += [Norm(ngf)]
+
+        if Activation is not None:
+            model += [Activation]
+        self.res_dest += [len(model) - 1]
+
+        # Initialize encoder-related variables
+        self.use_skip_connection = use_skip_connection
+        self.encoder_idx = []
+        in_ngf = ngf
+
+        # Create the downsampling (encoder) blocks
+        for i in range(num_downs):
+            if i == 0:
+                mult = 1
+            else:
+                mult = 2
+            model += [
+                Conv(
+                    in_ngf, in_ngf * mult, kernel_size=3, stride=1,
+                    bias=use_bias, padding='same', padding_mode=pad_type,
+                )
+            ]
+            self.res_source += [len(model) - 1]
+            if Norm is not None:
+                model += [Norm(in_ngf * mult)]
+
+            if Activation is not None:
+                model += [Activation]
+            self.res_dest += [len(model) - 1]
+
+            if doubleconv:
+                model += [
+                    Conv(
+                        in_ngf * mult, in_ngf * mult, kernel_size=3, stride=1,
+                        bias=use_bias, padding='same', padding_mode=pad_type,
+                    )
+                ]
+                self.res_source += [len(model) - 1]
+                if Norm is not None:
+                    model += [Norm(in_ngf * mult)]
+                if Activation is not None:
+                    model += [Activation]
+                self.res_dest += [len(model) - 1]
+
+            self.encoder_idx += [len(model) - 1]
+            model += [Pool(2)]
+            in_ngf = in_ngf * mult
+
+
+        model += [
+            Conv(
+                in_ngf, in_ngf * 2, kernel_size=3, stride=1, bias=use_bias,
+                padding='same', padding_mode=pad_type,
+            )
+        ]
+        self.res_source += [len(model) - 1]
+        if Norm is not None:
+            model += [Norm(in_ngf * 2)]
+
+        if Activation is not None:
+            model += [Activation]
+        self.res_dest += [len(model) - 1]
+
+        if doubleconv:
+            #self.conv_id += [len(model)]
+            model += [
+                Conv(
+                    in_ngf * 2, in_ngf * 2, kernel_size=3, stride=1,
+                    bias=use_bias, padding='same', padding_mode=pad_type,
+                )
+            ]
+            self.res_source += [len(model) - 1]
+            if Norm is not None:
+                model += [Norm(in_ngf * 2)]
+
+            if Activation is not None:
+                model += [Activation]
+            self.res_dest += [len(model) - 1]
+
+        # Create the upsampling (decoder) blocks
+        self.decoder_idx = []
+        mult = 2 ** (num_downs)
+        for i in range(num_downs):
+            self.decoder_idx += [len(model)]
+            model += [nn.Upsample(scale_factor=2, mode=interp)]
+            if self.use_skip_connection:  # concatenate encoder/decoder feature
+                m = mult + mult // 2
+            else:
+                m = mult
+            model += [
+                Conv(
+                    ngf * m, ngf * (mult // 2), kernel_size=3, stride=1,
+                    bias=use_bias, padding='same', padding_mode=pad_type,
+                )
+            ]
+            self.res_source += [len(model) - 1]
+            if Norm is not None:
+                model += [Norm(ngf * (mult // 2))]
+            if Activation is not None:
+                model += [Activation]
+            self.res_dest += [len(model) - 1]
+
+            if doubleconv:
+                model += [
+                    Conv(
+                        ngf * (mult // 2),
+                        ngf * (mult // 2),
+                        kernel_size=3,
+                        stride=1,
+                        bias=use_bias,
+                        padding='same',
+                        padding_mode=pad_type,
+                    )
+                ]
+                self.res_source += [len(model) - 1]
+                if Norm is not None:
+                    model += [Norm(ngf * (mult // 2))]
+
+                if Activation is not None:
+                    model += [Activation]
+                self.res_dest += [len(model) - 1]
+
+            mult = mult // 2
+
+        print('Encoder skip connect id', self.encoder_idx)
+        print('Decoder skip connect id', self.decoder_idx)
+
+        Conv = getattr(nn, 'Conv%dd' % ndims)
+        # final conv w/o normalization layer
+        model += [
+            Conv(
+                ngf * mult,
+                output_nc,
+                kernel_size=3,
+                stride=1,
+                bias=use_bias,
+                padding='same',
+                padding_mode=pad_type,
+            )
+        ]
+        if FinalActivation is not None:
+            model += [FinalActivation]
+        self.model = nn.Sequential(*model)
+
+    def forward(self, input, layers=[], encode_only=False, verbose=False):
+        """Run ``input``, optionally collecting activations at ``layers``.
+
+        Without ``layers``, returns the network output tensor.
+        With ``layers``, returns the output tensor and a list of activations.
+        With ``encode_only``, stops early and returns only the activation list.
+        ``verbose`` prints each layer's output shape.
+        """
+        if len(layers) > 0:
+            feat = input
+            feats = []
+            enc_feats = []
+            feat_tmp = dict()
+            for layer_id, layer in enumerate(self.model):
+                feat = layer(feat)
+                # print(layer_id, layer)
+
+                if verbose:
+                    print(layer_id, layer.__class__.__name__, feat.size())
+
+                if self.residual_connection and layer_id in self.res_source:
+                    feat_tmp = feat
+                    if verbose:
+                        print("Record skip connection input from %d" % layer_id)
+
+                if self.residual_connection and layer_id in self.res_dest:
+                    assert feat_tmp.size() == feat.size()
+                    feat = feat + 0.1 * feat_tmp
+                    if verbose:
+                        print("Add skip connection input for %d" % layer_id)
+
+                if self.use_skip_connection:  # use encoder/decoder concat
+                    if layer_id in self.encoder_idx:
+                        enc_feats.append(feat)
+                    if layer_id in self.decoder_idx:
+                        feat = torch.cat((enc_feats.pop(), feat), dim=1)
+
+                if layer_id in layers:
+                    if verbose:
+                        print(
+                            "%d: adding the output of %s %d"
+                            % (
+                                layer_id,
+                                layer.__class__.__name__,
+                                feat.size(1),
+                            ),
+                            feat.size(),
+                        )
+                    feats.append(feat)
+                else:
+                    if verbose:
+                        print(
+                            "%d: skipping %s"
+                            % (layer_id, layer.__class__.__name__),
+                            feat.size(),
+                        )
+                    pass
+                if layer_id == layers[-1] and encode_only:
+                    if verbose:
+                        print("encoder only return features")
+                    return feats  # return intermediate features alone; stop in the last layers
+
+            return feat, feats  # return both output and intermediate features
+        else:
+            """Standard forward"""
+            enc_feats = []
+            feat = input
+            for layer_id, layer in enumerate(self.model):
+                # print(layer_id, layer.__class__.__name__)
+                feat = layer(feat)
+                if self.residual_connection and layer_id in self.res_source:
+                    feat_tmp = feat
+                if self.residual_connection and layer_id in self.res_dest:
+                    assert feat_tmp.size() == feat.size()
+                    feat = feat + 0.1 * feat_tmp
+
+                if self.use_skip_connection:
+                    if layer_id in self.decoder_idx:
+                        feat = torch.cat((enc_feats.pop(), feat), dim=1)
+                    if layer_id in self.encoder_idx:
+                        enc_feats.append(feat)
+            return feat
