@@ -1,5 +1,5 @@
 """
-Use cumulative annotation files for successive COOL-BLOB predictions on one scan.
+Use cumulative annotation files for successive Segmento v1 predictions on one scan.
 """
 from pathlib import Path
 from types import SimpleNamespace
@@ -18,7 +18,7 @@ class InteractiveSession:
     Parameters
     ----------
     model_directory : pathlib.Path
-        Directory containing config.yml, model.yml, and weights.pt.
+        Directory containing config.yml, model.yml, and the tracked checkpoint parts.
     volume_path : pathlib.Path
         Existing 3D NIfTI scan. The source file is never modified.
     modality : str, default="ct"

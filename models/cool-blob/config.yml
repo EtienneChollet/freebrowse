@@ -1,4 +1,4 @@
-name: COOL-BLOB (epoch 500)
+name: Segmento v1
 backend: fiery_flame
 portable_package: cool_blob
 training_config_path: model.yml

@@ -1,5 +1,5 @@
 """
-Vendored COOL-BLOB definitions; see PROVENANCE.md for sources and supported scope.
+Vendored Segmento v1 definitions; see PROVENANCE.md for sources and supported scope.
 
 Sampling and attention equations retain the original implementation and parameter names.
 """
@@ -185,8 +185,8 @@ class _AmixCrossMixin(nn.Module):
         # `_embed` pads to it instead of to a multiple of 2**(num_downs+1).
         self.anatomix_input_shape = None
 
-        assert anatomix_backbone == "unet", "Only the COOL-BLOB CNN is bundled"
-        assert anatomix_random_init, "Load the full COOL-BLOB checkpoint"
+        assert anatomix_backbone == "unet", "Only the Segmento v1 CNN is bundled"
+        assert anatomix_random_init, "Load the full Segmento v1 checkpoint"
         assert not freeze_anatomix, "The bundled checkpoint includes the backbone"
         self.anatomix = Unet(
             dimension=3,

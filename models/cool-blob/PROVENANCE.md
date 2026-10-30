@@ -1,4 +1,6 @@
-# COOL-BLOB source provenance
+# Segmento v1 source provenance
+
+Segmento v1 is the public name for the COOL-BLOB epoch-500 model. The model ID and Python package retain their existing names, `cool-blob` and `cool_blob`, for compatibility.
 
 The bundled architecture is the dependency closure of `AmixCrossAttentionClickCachedFixedTotalMultiLabel` used by COOL-BLOB epoch 500. Sampling, attention equations, backbone module names, and state-dict keys are retained. This is an inference distribution; it does not provide the original training system or unrelated model families.
 

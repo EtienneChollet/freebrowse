@@ -1,3 +1,3 @@
 """
-Portable COOL-BLOB model and interactive inference implementation.
+Portable Segmento v1 model and interactive inference implementation.
 """

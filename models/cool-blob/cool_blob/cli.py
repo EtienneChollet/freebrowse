@@ -1,5 +1,5 @@
 """
-Run COOL-BLOB on one scan and successive cumulative annotation NIfTI files.
+Run Segmento v1 on one scan and successive cumulative annotation NIfTI files.
 """
 import argparse
 from pathlib import Path
