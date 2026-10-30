@@ -1,10 +1,11 @@
-"""AI inference engine for the /ai/session/{id}/infer/{ml_id} endpoint.
+"""
+AI inference engine for the /ai/session/{id}/infer/{ml_id} endpoint.
 
 Adapted from freebrowse-eti/backend/src/ml_inference.py:
 - Sessions are on-disk (SessionManager-owned); inference reads paths from the
   session manifest rather than accepting base64-encoded bodies.
-- Annotations arrive as a uint8 NIfTI label mask (1 = positive, 2 = negative)
-  rather than flat click-index lists.
+- Binary annotations use 1 = positive, 2 = negative. Multiclass annotations use 1–254 for
+  foreground classes and 255 for explicit background. Both arrive as uint8 NIfTI masks.
 - Model cache is guarded by a threading.Lock since FastAPI runs sync endpoints
   on a threadpool.
 """
@@ -17,7 +18,7 @@ import sys
 import threading
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any
+from typing import Any, Dict, Optional, Tuple
 
 import nibabel as nib
 import numpy as np
@@ -586,18 +587,39 @@ def run_inference(
     label_value: int,
     cache_entry: Any,
     session_dir: Path,
-    manifest: dict[str, Any],
+    manifest: Dict[str, Any],
     data_dir: Path,
     models_dir: Path,
-    model_info: dict[str, Any] | None = None,
-) -> tuple[nib.Nifti1Image, np.ndarray]:
-    """Run the configured model on the session volume and annotation mask.
+    model_info: Optional[Dict[str, Any]] = None,
+) -> Tuple[nib.Nifti1Image, np.ndarray]:
+    """
+    Run the configured model on the session volume and annotation mask.
 
     SP3D models use the existing `SegModel` path. nnInteractive models use the
     official `nnInteractiveInferenceSession` and receive raw image values plus
-    bitmap-derived point interactions.
+    bitmap-derived point interactions. Multiclass Amix models use stable foreground IDs and
+    explicit background marks; iterative models isolate prior logits by prediction_context_id.
     """
     backend = _model_backend(model_info)
+    if backend == "fiery_flame":
+        import fiery_flame
+
+        volume_path = _resolve_volume_path(manifest, session_dir, data_dir)
+        annotation_path = (session_dir / manifest["annotation_path"]).resolve()
+        if not annotation_path.is_relative_to(session_dir.resolve()):
+            raise HTTPException(400, "Annotations must be inside the session directory")
+        binary_options = {}
+        if manifest.get("editing_mode") == "per_label":
+            binary_options["active_label_id"] = manifest["active_label_id"]
+        elif "classes" in manifest:
+            binary_options["allowed_label_ids"] = [entry["id"] for entry in manifest["classes"]]
+        prediction = fiery_flame.runner.predict(
+            volume_path, annotation_path, cache_entry, _model_config(model_info),
+            manifest.get("modality", "ct"),
+            context_id=manifest.get("prediction_context_id"),
+            **binary_options,
+        )
+        return prediction, prediction.affine
     if backend == NNINTERACTIVE_BACKEND:
         assert model_info is not None, "nnInteractive dispatch requires model_info"
         return run_nninteractive_inference(

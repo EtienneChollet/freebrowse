@@ -1,0 +1,4 @@
+name: OPEN-WHALE (epoch 213)
+backend: fiery_flame
+training_config_path: /autofs/cluster/dalcalab2/users/epc28/projects/interseg3d/output/2026-10-19_omitted-clicks/20261020_122226-3324cdb8ac0c9cd8e7443de07dc72cb0-OPEN-WHALE/config.yml
+checkpoint_path: /autofs/cluster/dalcalab2/users/epc28/projects/interseg3d/interseg3d-notebooks/jupyter/scribbleprompt3d/2026-10-19_omitted-clicks/evaluation/epoch-213-previews/runtime/OPEN-WHALE-epoch-213.pt

@@ -23,6 +23,9 @@ export function useAiCapabilities() {
         const body = await res.json();
         if (cancelled) return;
         setAiEnabled(Array.isArray(body) && body.length > 0);
+        if (new URLSearchParams(window.location.search).get("tab") === "aiAnnotation") {
+          useFreeBrowseStore.getState().setActiveTab("aiAnnotation");
+        }
       } catch {
         if (!cancelled) setAiEnabled(false);
       }

@@ -7,6 +7,9 @@ import {
 } from "@/lib/confirmations";
 import { uint8ArrayToBase64 } from "@/lib/niivue-helpers";
 import type { AiSessionSummary } from "@/store/ai-slice";
+import { annotationColormap, BACKGROUND_LABEL, supportsPerLabelEditing } from "@/lib/ai-labels";
+import { saveAiSettings } from "@/lib/ai-session-api";
+import { useMulticlassAnnotation } from "@/hooks/use-multiclass-annotation";
 
 const SESSION_NAME_RE = /^[A-Za-z0-9_-]+$/;
 
@@ -23,9 +26,9 @@ function ensureNiiName(name: string | undefined | null): string {
 }
 
 function stripDataPrefix(url: string): string | null {
-  if (url.startsWith("/data/")) return url.slice("/data/".length);
-  if (url.startsWith("data/")) return url.slice("data/".length);
-  return null;
+  const path = url.startsWith("/data/") ? url.slice(6) :
+    url.startsWith("data/") ? url.slice(5) : null;
+  return path?.startsWith("ai-sessions/") ? null : path;
 }
 
 async function fetchArrayBuffer(url: string): Promise<Uint8Array> {
@@ -42,7 +45,8 @@ async function exportAndUploadDrawing(
   // NVImage.saveToUint8Array(filename, drawing8) returns the drawing as a
   // gzipped NIfTI (when filename ends in .gz), without triggering a download.
   const annotRel = "annotations.nii.gz";
-  const bytes = await nv.volumes[0].saveToUint8Array(annotRel, nv.drawBitmap);
+  const bitmap = nv.drawBitmap.slice();
+  const bytes = await nv.volumes[0].saveToUint8Array(annotRel, bitmap);
   const targetPath = `ai-sessions/${sessionName}/${annotRel}`;
   const res = await fetch("/data/nii", {
     method: "POST",
@@ -96,11 +100,11 @@ const AI_PROMPT_COLORMAP = {
 };
 
 export function useAiSession(nvRef: React.RefObject<Niivue | null>) {
+  const { requestPrediction, cancelPendingPrediction, saveLabelEdits } = useMulticlassAnnotation(nvRef);
   const aiEnabled = useFreeBrowseStore((s) => s.aiEnabled);
   const setAiSessions = useFreeBrowseStore((s) => s.setAiSessions);
   const setAiActiveSession = useFreeBrowseStore((s) => s.setAiActiveSession);
   const aiActiveSession = useFreeBrowseStore((s) => s.aiActiveSession);
-  const drawingOptions = useFreeBrowseStore((s) => s.drawingOptions);
   const setDrawingOptions = useFreeBrowseStore((s) => s.setDrawingOptions);
   const setActiveTab = useFreeBrowseStore((s) => s.setActiveTab);
   const setShowUploader = useFreeBrowseStore((s) => s.setShowUploader);
@@ -124,6 +128,24 @@ export function useAiSession(nvRef: React.RefObject<Niivue | null>) {
   const enterDrawMode = useCallback(() => {
     const nv = nvRef.current;
     if (!nv) return;
+    const state = useFreeBrowseStore.getState();
+    const drawingOptions = state.drawingOptions;
+    if (state.aiAnnotationMode === "multiclass") {
+      const penValue = state.aiEditingMode === "per_label"
+        ? state.aiActiveLabelId ?? BACKGROUND_LABEL : BACKGROUND_LABEL;
+      if (!nv.drawBitmap) nv.createEmptyDrawing();
+      nv.setDrawColormap(annotationColormap(state.aiClasses) as unknown as string);
+      nv.setPenValue(penValue, false);
+      nv.setDrawOpacity(1);
+      nv.opts.clickToSegment = false;
+      nv.setDrawingEnabled(!state.aiClasses.find((item) => item.id === state.aiActiveLabelId)?.locked);
+      setDrawingOptions((prev) => ({
+        ...prev, enabled: true, mode: "pen", opacity: 1, penValue,
+        penFill: false, penErases: false,
+      }));
+      setActiveTab("aiAnnotation");
+      return;
+    }
     nv.setDrawingEnabled(false);
     const penValue = drawingOptions.penValue === 2 ? 2 : 1;
     // NiiVue accepts a ColorMap object here, but its type signature only exposes names.
@@ -138,7 +160,7 @@ export function useAiSession(nvRef: React.RefObject<Niivue | null>) {
       penValue,
     }));
     setActiveTab("aiAnnotation");
-  }, [nvRef, drawingOptions.penValue, drawingOptions.penFill, setDrawingOptions, setActiveTab]);
+  }, [nvRef, setDrawingOptions, setActiveTab]);
 
   const exitDrawModeLocal = useCallback(() => {
     const nv = nvRef.current;
@@ -203,7 +225,7 @@ export function useAiSession(nvRef: React.RefObject<Niivue | null>) {
             `Volume upload failed: ${uploadRes.status} ${uploadRes.statusText}`,
           );
 
-        volumePathForSetVolume = targetPath;
+        volumePathForSetVolume = basename;
       } else {
         volumePathForSetVolume = backendRelPath;
       }
@@ -213,7 +235,10 @@ export function useAiSession(nvRef: React.RefObject<Niivue | null>) {
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ volume_path: volumePathForSetVolume }),
+          body: JSON.stringify({
+            volume_path: volumePathForSetVolume,
+            volume_path_root: needsUpload ? "session" : "data",
+          }),
         },
       );
       if (!setVolRes.ok) {
@@ -221,6 +246,24 @@ export function useAiSession(nvRef: React.RefObject<Niivue | null>) {
         throw new Error(`set_volume failed (${setVolRes.status}): ${msg}`);
       }
 
+      const state = useFreeBrowseStore.getState();
+      const classes = [{ id: 1, name: "Class 1", color: "#b6ff00" }];
+      const editingMode = state.aiAnnotationMode === "multiclass" && supportsPerLabelEditing(state.aiModelId)
+        ? "per_label" : "joint";
+      const activeLabelId = editingMode === "per_label" ? classes[0].id : null;
+      const saved = state.aiModelId ? await saveAiSettings(session_id, {
+        model_id: state.aiModelId, annotation_mode: state.aiAnnotationMode,
+        classes, modality: state.aiModality, editing_mode: editingMode,
+        active_label_id: activeLabelId, state_version: 0,
+      }) : null;
+      useFreeBrowseStore.setState({
+        aiEditingMode: saved?.editing_mode ?? editingMode,
+        aiActiveLabelId: saved?.active_label_id ?? activeLabelId,
+        aiBinaryState: saved, aiLabelDrawingReady: true,
+      });
+      state.setAiClasses(saved?.classes ?? classes);
+      state.setAiAutoUpdate(true);
+      nv.closeDrawing();
       setAiActiveSession({ session_id, session_name });
       enterDrawMode();
       await refreshSessions();
@@ -233,9 +276,9 @@ export function useAiSession(nvRef: React.RefObject<Niivue | null>) {
       const nv = nvRef.current;
       if (!nv) throw new Error("Viewer not ready");
 
-      const summary = useFreeBrowseStore
-        .getState()
-        .aiSessions.find((s) => s.session_id === sessionId);
+      const sessions = await fetchSessionList();
+      setAiSessions(sessions);
+      const summary = sessions.find((s) => s.session_id === sessionId);
       if (!summary) throw new Error(`Unknown session: ${sessionId}`);
       if (!summary.volume_path)
         throw new Error("Session has no volume set; cannot load");
@@ -253,32 +296,57 @@ export function useAiSession(nvRef: React.RefObject<Niivue | null>) {
       await nv.loadVolumes([{ url: volumeUrl }]);
       incrementVolumeVersion();
 
-      if (summary.annotation_path) {
-        try {
-          const annotUrl = `/data/ai-sessions/${summary.session_name}/${summary.annotation_path}`;
-          const bytes = await fetchArrayBuffer(annotUrl);
-          const nvimage = await nv.niftiArray2NVImage(bytes);
-          const ok = nv.loadDrawing(nvimage);
-          if (!ok)
-            console.warn(
-              "loadDrawing returned false — annotation dimensions may not match the volume",
-            );
-        } catch (err) {
-          console.error("Failed to load existing annotations:", err);
+      const state = useFreeBrowseStore.getState();
+      useFreeBrowseStore.setState({
+        aiEditingMode: summary.editing_mode ?? "joint",
+        aiActiveLabelId: summary.active_label_id ?? null,
+        aiBinaryState: summary,
+        aiLabelDrawingReady: true,
+      });
+      state.setAiModel(summary.model_id ?? summary.last_inference_ml_id ?? state.aiModelId,
+        summary.annotation_mode ?? "binary");
+      state.setAiClasses(summary.classes ?? [{ id: 1, name: "Class 1", color: "#b6ff00" }]);
+      state.setAiModality(summary.modality ?? "ct");
+      state.setAiAutoUpdate(true);
+
+      const annotationPath = summary.editing_mode === "per_label" && summary.active_label_id
+        ? summary.label_edits?.[String(summary.active_label_id)]?.annotation_path
+        : summary.annotation_path;
+      if (annotationPath) {
+        const annotUrl = `/data/ai-sessions/${summary.session_name}/${annotationPath}`;
+        const bytes = await fetchArrayBuffer(annotUrl);
+        const nvimage = await nv.niftiArray2NVImage(bytes);
+        if (!nv.loadDrawing(nvimage)) throw new Error("Saved annotations do not match this scan");
+        if (summary.editing_mode !== "per_label" && summary.annotation_mode === "multiclass" &&
+          nv.drawBitmap) {
+          const ids = new Set(summary.classes?.map((item) => item.id));
+          for (let index = 0; index < nv.drawBitmap.length; index++) {
+            const value = nv.drawBitmap[index];
+            if (value !== BACKGROUND_LABEL && !ids.has(value)) nv.drawBitmap[index] = 0;
+          }
+          nv.drawClearAllUndoBitmaps();
+          nv.drawAddUndoBitmap();
+          nv.refreshDrawing(true);
         }
       }
 
       setAiActiveSession({
         session_id: summary.session_id,
         session_name: summary.session_name,
+        result_path: summary.result_path,
+        result_model_id: summary.last_inference_ml_id,
       });
       enterDrawMode();
     },
-    [nvRef, setShowUploader, incrementVolumeVersion, setAiActiveSession, enterDrawMode],
+    [nvRef, setShowUploader, incrementVolumeVersion, setAiActiveSession, setAiSessions, enterDrawMode],
   );
 
   const handleRunSegmentation = useCallback(
     async (mlId: string, labelValue: number): Promise<void> => {
+      if (useFreeBrowseStore.getState().aiAnnotationMode === "multiclass") {
+        await requestPrediction();
+        return;
+      }
       const nv = nvRef.current;
       const active = useFreeBrowseStore.getState().aiActiveSession;
       if (!nv || !active || nv.volumes.length === 0)
@@ -327,22 +395,40 @@ export function useAiSession(nvRef: React.RefObject<Niivue | null>) {
       });
       incrementVolumeVersion();
     },
-    [nvRef, incrementVolumeVersion],
+    [nvRef, incrementVolumeVersion, requestPrediction],
   );
 
   const handleExitAndSaveSession = useCallback(async (): Promise<void> => {
     const nv = nvRef.current;
     const active = useFreeBrowseStore.getState().aiActiveSession;
     if (nv && active) {
+      const state = useFreeBrowseStore.getState();
+      const wasDrawing = nv.opts.drawingEnabled;
+      cancelPendingPrediction();
+      state.setAiAutoUpdate(false);
+      nv.setDrawingEnabled(false);
       try {
-        const annotRel = await exportAndUploadDrawing(nv, active.session_name);
-        if (annotRel) await postSetAnnots(active.session_id, annotRel);
+        if (!state.aiLabelDrawingReady) {
+          throw new Error("Select a label to reload its drawing before saving the session");
+        }
+        if (state.aiEditingMode === "per_label") await saveLabelEdits();
+        else {
+          const annotRel = await exportAndUploadDrawing(nv, active.session_name);
+          if (annotRel) await postSetAnnots(active.session_id, annotRel);
+          if (state.aiModelId) await saveAiSettings(active.session_id, {
+            model_id: state.aiModelId, annotation_mode: state.aiAnnotationMode,
+            classes: state.aiClasses, modality: state.aiModality,
+          });
+        }
       } catch (err) {
-        console.error("Failed to save annotations on exit:", err);
+        nv.setDrawingEnabled(wasDrawing);
+        state.setAiAutoUpdate(state.aiAutoUpdate);
+        throw err;
       }
     }
     exitDrawModeLocal();
-  }, [nvRef, exitDrawModeLocal]);
+    await refreshSessions();
+  }, [nvRef, exitDrawModeLocal, refreshSessions, cancelPendingPrediction, saveLabelEdits]);
 
   const handleExitAndDeleteSession = useCallback(async (): Promise<void> => {
     if (!aiActiveSession) return;

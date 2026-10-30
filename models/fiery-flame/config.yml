@@ -1,0 +1,4 @@
+name: FIERY-FLAME (epoch 500)
+backend: fiery_flame
+training_config_path: /cluster/dalcalab2/users/epc28/projects/interseg3d/output/2026-08-28_amix-cross-interactive-orcd-no-supervox/20260829_074828-77a0f7125236ed20a4091dff5aefbec5-FIERY-FLAME/config.yml
+checkpoint_path: /cluster/dalcalab2/users/epc28/projects/interseg3d/output/2026-08-28_amix-cross-interactive-orcd-no-supervox/20260829_074828-77a0f7125236ed20a4091dff5aefbec5-FIERY-FLAME/checkpoints/epoch-500.pt

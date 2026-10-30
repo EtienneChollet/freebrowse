@@ -10,6 +10,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { LabeledSliderWithInput } from "@/components/ui/labeled-slider-with-input";
 import { randomSessionName } from "@/lib/random-session-name";
 import type { AiSessionSummary } from "@/store/ai-slice";
+import MulticlassAnnotationControls from "@/components/tabs/multiclass-annotation-controls";
 
 interface AiAnnotationTabProps {
   volumesCount: number;
@@ -34,6 +35,7 @@ type ModelInfo = {
   ml_id: string;
   name: string;
   backend?: string;
+  annotation_mode?: "binary" | "multiclass";
   config_path: string | null;
 };
 
@@ -65,7 +67,11 @@ export default function AiAnnotationTab({
   const [loading, setLoading] = useState<boolean>(false);
 
   const [models, setModels] = useState<ModelInfo[]>([]);
-  const [selectedMlId, setSelectedMlId] = useState<string>("");
+  const selectedMlId = useFreeBrowseStore((s) => s.aiModelId);
+  const annotationMode = useFreeBrowseStore((s) => s.aiAnnotationMode);
+  const editingMode = useFreeBrowseStore((s) => s.aiEditingMode);
+  const setAiModel = useFreeBrowseStore((s) => s.setAiModel);
+  const multiclassBusy = useFreeBrowseStore((s) => s.aiBusy);
   const [labelValue, setLabelValue] = useState<number>(1);
   const [inferring, setInferring] = useState<boolean>(false);
   const [inferError, setInferError] = useState<string | null>(null);
@@ -81,15 +87,14 @@ export default function AiAnnotationTab({
       if (!res.ok) throw new Error(`GET /ai/model/list failed: ${res.status}`);
       const body: ModelInfo[] = await res.json();
       setModels(body);
-      setSelectedMlId((prev) =>
-        prev && body.some((m) => m.ml_id === prev)
-          ? prev
-          : body[0]?.ml_id ?? "",
-      );
+      const current = useFreeBrowseStore.getState().aiModelId;
+      const requested = new URLSearchParams(window.location.search).get("model");
+      const selected = body.find((model) => model.ml_id === (current || requested)) ?? body[0];
+      if (selected) setAiModel(selected.ml_id, selected.annotation_mode ?? "binary");
     } catch (err) {
       console.error(err);
     }
-  }, []);
+  }, [setAiModel]);
 
   useEffect(() => {
     void fetchModels();
@@ -106,6 +111,26 @@ export default function AiAnnotationTab({
     [models, selectedMlId],
   );
   const isNnInteractiveModel = selectedModel?.backend === "nninteractive";
+  const isMulticlass = annotationMode === "multiclass";
+
+  const renderModelSelect = () => (
+    <div className="space-y-2">
+      <Label htmlFor="ai-model" className="text-sm font-medium">Select AI model</Label>
+      <Select id="ai-model" value={selectedMlId} disabled={!!activeSession && editingMode === "per_label"}
+        onChange={(event) => {
+        const model = models.find((entry) => entry.ml_id === event.target.value);
+        if (model) setAiModel(model.ml_id, model.annotation_mode ?? "binary");
+      }}>
+        {models.length === 0 && <option value="">(no models available)</option>}
+        {models.map((model) => <option key={model.ml_id} value={model.ml_id}
+          disabled={!!activeSession && (model.annotation_mode ?? "binary") !== annotationMode}>
+          {model.name}
+        </option>)}
+      </Select>
+      {activeSession && editingMode === "per_label" &&
+        <p className="text-xs text-muted-foreground">Turn off One label at a time to change models.</p>}
+    </div>
+  );
 
   const handleClickNewSession = async () => {
     setNewError(null);
@@ -182,6 +207,7 @@ export default function AiAnnotationTab({
 
   const renderPreSession = () => (
     <div className="p-4 space-y-6">
+      {renderModelSelect()}
       <div className="space-y-2">
         <Label className="text-sm font-medium">Session Name</Label>
         <Input
@@ -193,7 +219,7 @@ export default function AiAnnotationTab({
         <Button
           className="w-full"
           onClick={handleClickNewSession}
-          disabled={volumesCount === 0 || loading}
+          disabled={volumesCount === 0 || loading || !selectedMlId}
         >
           New Session
         </Button>
@@ -245,6 +271,22 @@ export default function AiAnnotationTab({
 
   const renderPostSession = () => {
     if (!activeSession) return null;
+    if (isMulticlass) return (
+      <div className="flex flex-col flex-1 min-h-0 overflow-y-auto">
+        <div className="p-4 space-y-3 shrink-0">
+          <div className="flex items-center justify-between gap-2">
+            <p className="text-xs truncate" title={activeSession.session_name}>{activeSession.session_name}</p>
+            <Button variant="outline" size="sm" disabled={multiclassBusy || exitBusy}
+              onClick={() => void handleExitAndSave()}>Save & Exit</Button>
+          </div>
+          {renderModelSelect()}
+        </div>
+        <MulticlassAnnotationControls onPenValueChange={onPenValueChange}
+          onDrawModeChange={onDrawModeChange} onDrawUndo={onDrawUndo}
+          onRunSegmentation={() => void handleRunSegmentation()} />
+        {inferError && <p className="px-4 text-xs text-destructive">{inferError}</p>}
+      </div>
+    );
     return (
       <div className="p-4 space-y-4">
         <div className="space-y-1">
@@ -279,21 +321,7 @@ export default function AiAnnotationTab({
         </Button>
 
         <div className="space-y-2">
-          <Label className="text-sm font-medium">Select AI model</Label>
-          <Select
-            value={selectedMlId}
-            onChange={(e) => setSelectedMlId(e.target.value)}
-          >
-            {models.length === 0 ? (
-              <option value="">(no models available)</option>
-            ) : (
-              models.map((m) => (
-                <option key={m.ml_id} value={m.ml_id}>
-                  {m.name}
-                </option>
-              ))
-            )}
-          </Select>
+          {renderModelSelect()}
           <Button variant="outline" className="w-full" onClick={handleLoadModels}>
             Reload Models
           </Button>
@@ -456,12 +484,13 @@ export default function AiAnnotationTab({
       <div className="border-b px-4 py-3">
         <h2 className="text-lg font-semibold">AI annotation (experimental)</h2>
         <p className="text-sm text-muted-foreground">
-          Guide an AI model with positive and negative seed voxels.
+          {isMulticlass ? "Guide segmentation with class clicks and scribbles." :
+            "Guide an AI model with positive and negative seed voxels."}
         </p>
       </div>
-      <ScrollArea className="flex-1 min-h-0">
+      {activeSession && isMulticlass ? renderPostSession() : <ScrollArea className="flex-1 min-h-0">
         {activeSession ? renderPostSession() : renderPreSession()}
-      </ScrollArea>
+      </ScrollArea>}
     </div>
   );
 }

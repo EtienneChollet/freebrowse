@@ -1,0 +1,4 @@
+name: GREY-PLANT (epoch 1000)
+backend: fiery_flame
+training_config_path: /autofs/cluster/dalcalab2/users/hew19/interseg3d/output_orcd/2026-10-07_amix-cross-iterative-1k-epochs/20261007_173555-b0ca402d940bb128bc1c2a00110b7684-GREY-PLANT/config.yml
+checkpoint_path: /autofs/cluster/dalcalab2/users/hew19/interseg3d/output_orcd/2026-10-07_amix-cross-iterative-1k-epochs/20261007_173555-b0ca402d940bb128bc1c2a00110b7684-GREY-PLANT/checkpoints/epoch-1000.pt

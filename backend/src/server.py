@@ -5,6 +5,7 @@ import logging
 from typing import Union, List
 import uuid
 import base64
+import re
 from pathlib import Path
 
 from fastapi import FastAPI, HTTPException
@@ -30,6 +31,7 @@ models_dir = os.getenv('MODELS_DIR')  # Contains trained PyTorch models
 imaging_extensions_str = os.getenv('IMAGING_EXTENSIONS', '["*.nii", "*.nii.gz"]')
 imaging_extensions = json.loads(imaging_extensions_str)
 serverless_mode = os.getenv('SERVERLESS_MODE', 'false').lower() == 'true'
+read_only_data = os.getenv('READ_ONLY_DATA', 'false').lower() == 'true'
 ai_dir = os.getenv('AI_DIR')
 models_dir = os.getenv('MODELS_DIR')
 enable_ai = os.getenv('ENABLE_AI', 'false').lower() == 'true' and not serverless_mode
@@ -164,6 +166,8 @@ def save_scene(request: SaveSceneRequest):
     """
     if serverless_mode:
         raise HTTPException(status_code=404, detail="Endpoint not available in serverless mode")
+    if read_only_data:
+        raise HTTPException(status_code=403, detail="Source scan directory is read-only")
     try:
         # Validate filename
         if not request.filename:
@@ -200,13 +204,10 @@ def save_scene(request: SaveSceneRequest):
 @app.post("/data/nii")
 def save_volume(request: SaveVolumeRequest):
     """
-    Save volume data to a file in the DATA_DIR directory.
+    Save a NIfTI upload in the data directory or a separately configured AI session directory.
 
-    Args:
-        request: Contains filename and base64 encoded NIfTI data
-
-    Returns:
-        Success message or error
+    READ_ONLY_DATA permits only uploads into existing AI sessions, preserving source scans.
+    Binary edits use their dedicated endpoint so generic uploads cannot overwrite accepted masks.
     """
     if serverless_mode:
         raise HTTPException(status_code=404, detail="Endpoint not available in serverless mode")
@@ -231,7 +232,32 @@ def save_volume(request: SaveVolumeRequest):
             raise HTTPException(status_code=400, detail=f"Invalid base64 data: {str(e)}")
         
         # Create full file path
-        file_path = Path(data_dir) / filename
+        root = Path(data_dir).resolve()
+        relative = Path(filename)
+        if relative.parts[0] == "ai-sessions" and enable_ai:
+            root = Path(ai_dir or "./ai-sessions").resolve()
+            relative = Path(*relative.parts[1:])
+        elif read_only_data:
+            raise HTTPException(403, "Source scan directory is read-only")
+        file_path = (root / relative).resolve()
+        if not file_path.is_relative_to(root):
+            raise HTTPException(400, "Upload path must remain inside its storage directory")
+        session_storage = Path(ai_dir or "./ai-sessions").resolve()
+        if enable_ai and file_path.is_relative_to(session_storage):
+            session_relative = file_path.relative_to(session_storage)
+            manifest_path = file_path.parent / "session.json"
+            if len(session_relative.parts) != 2 or not manifest_path.is_file():
+                raise HTTPException(400, "Uploads require an existing AI session")
+            with manifest_path.open() as stream:
+                session = json.load(stream)
+            if session.get("editing_mode") == "per_label":
+                raise HTTPException(409, "Save binary annotations through the active label endpoint")
+            binary_filename = (
+                r"(?:label-\d+-(?:annotations-\d+|mask-\d+|initial(?:-mask)?)"
+                r"|locked-\d+-[0-9a-f]+|binary-result-\d+)\.nii\.gz"
+            )
+            if re.fullmatch(binary_filename, file_path.name):
+                raise HTTPException(409, "Binary editing files are managed by the label endpoints")
         
         # Create directory if it doesn't exist
         file_path.parent.mkdir(parents=True, exist_ok=True)
@@ -245,9 +271,11 @@ def save_volume(request: SaveVolumeRequest):
         return {
             "success": True,
             "message": f"Volume saved successfully to {filename}",
-            "file_path": str(file_path.relative_to(data_dir))
+            "file_path": filename
         }
         
+    except HTTPException:
+        raise
     except Exception as e:
         logger.error(f"Error saving volume: {str(e)}")
         raise HTTPException(status_code=500, detail=f"Failed to save volume: {str(e)}")
@@ -280,6 +308,10 @@ if enable_qa:
 
 # Only mount data directory if not in serverless mode
 if not serverless_mode:
+    if enable_ai:
+        session_storage = Path(ai_dir or "./ai-sessions")
+        session_storage.mkdir(parents=True, exist_ok=True)
+        app.mount("/data/ai-sessions", StaticFiles(directory=session_storage), name="ai-sessions")
     app.mount("/data", StaticFiles(directory=data_dir, html=False), name="data")
 
 # Mount frontend static files at root LAST (catch-all)

@@ -62,6 +62,12 @@ export function useDrawing(
 
   const handleDrawModeChange = useCallback(
     (mode: "none" | "pen" | "wand") => {
+      const state = useFreeBrowseStore.getState();
+      if (mode !== "none" && state.aiActiveSession && !state.aiLabelDrawingReady) return;
+      if (mode !== "none" && state.aiEditingMode === "per_label" &&
+        (!state.aiLabelDrawingReady ||
+          state.aiClasses.find((item) => item.id === state.aiActiveLabelId)?.locked)) return;
+      const currentDrawing = useFreeBrowseStore.getState().drawingOptions;
       console.log("handleDrawModeChange() ", mode);
       setDrawingOptions((prev) => ({
         ...prev,
@@ -70,10 +76,10 @@ export function useDrawing(
       }));
       if (nvRef.current) {
         if (mode === "pen") {
-          const penValue = drawingOptions.penErases
+          const penValue = currentDrawing.penErases
             ? 0
-            : drawingOptions.penValue;
-          nvRef.current.setPenValue(penValue, drawingOptions.penFill);
+            : currentDrawing.penValue;
+          nvRef.current.setPenValue(penValue, currentDrawing.penFill);
           nvRef.current.setDrawingEnabled(true);
           nvRef.current.opts.clickToSegment = false;
         } else if (mode === "wand") {
@@ -189,8 +195,21 @@ export function useDrawing(
   );
 
   const handleDrawUndo = useCallback(() => {
+    const current = useFreeBrowseStore.getState();
+    if (current.aiActiveSession && !current.aiLabelDrawingReady) return;
+    if (current.aiEditingMode === "per_label" && (!current.aiLabelDrawingReady ||
+      current.aiClasses.find((item) => item.id === current.aiActiveLabelId)?.locked)) return;
     if (nvRef.current) {
-      nvRef.current.drawUndo();
+      const nv = nvRef.current;
+      const history = nv.drawUndoBitmaps;
+      const previous = (nv.currentDrawUndoBitmap - 1 + history.length) % history.length;
+      // Niivue 0.69 throws instead of returning when the previous undo slot is empty.
+      if (!history[previous] || history[previous].length < 2) return;
+      nv.drawUndo();
+      const state = useFreeBrowseStore.getState();
+      if (state.aiActiveSession && state.aiAnnotationMode === "multiclass") {
+        state.markAiDrawingChanged();
+      }
     }
   }, [nvRef]);
 
